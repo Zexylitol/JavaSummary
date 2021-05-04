@@ -8,6 +8,10 @@
 
 
 
+> Tips : 善用ctrl+f，搜索关键字
+
+
+
 # Java
 
 ## Java基础
