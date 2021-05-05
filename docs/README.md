@@ -8,7 +8,10 @@
 
 
 
-> Tips : 善用ctrl+f，搜索关键字
+> Tips : 
+>
+> 1. 善用ctrl+f，搜索关键字
+> 2. GitHub Flavored Markdown不支持LaTex，部分文章中的公式显示为源码，为了不影响阅读建议通过 https://zexylitol.github.io/JavaSummary/ 访问，或者安装chrome的插件[MathJax Plugin for Github](https://chrome.google.com/webstore/detail/mathjax-plugin-for-github/ioemnmodlmafdkllaclgeombjnmnbima)在个人浏览器解析LaTex公式
 
 
 
@@ -86,6 +89,10 @@
 
 
 # 设计模式
+
+
+
+
 
 
 
