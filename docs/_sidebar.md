@@ -45,6 +45,7 @@
     - [分组背包问题](LeetCode/动态规划/分组背包问题.md)
   - [二叉树](LeetCode/二叉树.md)
   - [二分](LeetCode/二分.md)
+  - [数学](LeetCode/数学.md)
 - 数据库
   - [重学SQL](数据库/重学SQL.md)
   - [JDBC核心技术](数据库/JDBC核心技术.md)
