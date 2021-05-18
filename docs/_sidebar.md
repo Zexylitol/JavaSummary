@@ -3,6 +3,7 @@
     - [关于 == 与 equasl()](Java基础/关于==与equasl().md)
     - [String、StringBuffer、StringBuilder的区别](Java基础/String、StringBuffer、StringBuilder的区别.md)
     - [抽象类与接口](Java基础/抽象类与接口.md)
+    - [Java中Comparable和Comparator的区别](Java基础/Java中Comparable和Comparator的区别.md)
     - [Java包装类详解（一）](Java基础/Java包装类详解（一）.md)
     - [Java包装类详解（二）](Java基础/Java包装类详解（二）.md)
     - [注解](Java基础/注解.md)
