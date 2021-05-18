@@ -1,8 +1,8 @@
 <!-- GFM-TOC -->
 
 - [引言](#引言)
-- [自然排序：java.lang.Comparable](#自然排序：java-lang-Comparable)
-- [定制排序：java.util.Comparator](#定制排序：java-util-Comparator)
+- [自然排序：java.lang.Comparable](#自然排序：javalangComparable)
+- [定制排序：java.util.Comparator](#定制排序：javautilComparator)
 - [总结](#总结)
 - [Reference](#Reference)
 
