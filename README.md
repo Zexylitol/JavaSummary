@@ -1,6 +1,6 @@
-|                             Java                             |                            数据库                            |                           LeetCode                           |                          计算机网络                          |                           操作系统                           |                           设计模式                           |
-| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| [<img src="https://i.im5i.com/2021/05/02/wauQd.jpg" alt="wauQd.jpg" border="0" style="zoom:5%;" />](#Java) | [​<img src="https://i.im5i.com/2021/05/02/wa5y4.jpg" alt="wa5y4.jpg" border="0" style="zoom:4%;" />​](#数据库) | [<img src="https://i.im5i.com/2021/05/02/waHYW.jpg" alt="waHYW.jpg" border="0" style="zoom:5%;" />](#LeetCode) | [<img src="https://i.im5i.com/2021/05/02/waj7G.jpg" alt="waj7G.jpg" border="0" style="zoom:4%;" />](#计算机网络) | [<img src="https://i.im5i.com/2021/05/02/waWPz.png" alt="waWPz.png" border="0" style="zoom:7%;" />](#操作系统) | [<img src="https://i.im5i.com/2021/05/02/waXT5.jpg" alt="waXT5.jpg" border="0" style="zoom:5%;" />](#设计模式) |
+|                             Java                             |                            数据库                            |                           LeetCode                           |                          计算机网络                          |                           操作系统                           |                           设计模式                           |                             框架                             |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| [<img src="https://i.im5i.com/2021/05/02/wauQd.jpg" alt="wauQd.jpg" border="0" style="zoom:5%;" />](#Java) | [​<img src="https://i.im5i.com/2021/05/02/wa5y4.jpg" alt="wa5y4.jpg" border="0" style="zoom:4%;" />​](#数据库) | [<img src="https://i.im5i.com/2021/05/02/waHYW.jpg" alt="waHYW.jpg" border="0" style="zoom:5%;" />](#LeetCode) | [<img src="https://i.im5i.com/2021/05/02/waj7G.jpg" alt="waj7G.jpg" border="0" style="zoom:4%;" />](#计算机网络) | [<img src="https://i.im5i.com/2021/05/02/waWPz.png" alt="waWPz.png" border="0" style="zoom:7%;" />](#操作系统) | [<img src="https://i.im5i.com/2021/05/02/waXT5.jpg" alt="waXT5.jpg" border="0" style="zoom:5%;" />](#设计模式) | [<img src="https://i.im5i.com/2021/05/24/C2z7t.png" alt="C2z7t.png" border="0" style="zoom:20%;" />](#框架) |
 
 本项目基于[Docsify](https://docsify.js.org/#/)构建，可通过以下站点访问：
 
@@ -10,7 +10,7 @@
 
 > Tips : 
 >
-> 1. 善用ctrl+f，搜索关键字
+> 1. 善用Ctrl+F，搜索关键字
 > 2. GitHub Flavored Markdown不支持LaTex，部分文章中的公式显示为源码，为了不影响阅读建议通过 https://zexylitol.github.io/JavaSummary/ 访问，或者安装chrome的插件[MathJax Plugin for Github](https://chrome.google.com/webstore/detail/mathjax-plugin-for-github/ioemnmodlmafdkllaclgeombjnmnbima)在个人浏览器解析LaTex公式
 
 
