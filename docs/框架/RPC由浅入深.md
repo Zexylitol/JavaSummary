@@ -69,11 +69,17 @@
 
 <center><img src="https://i.im5i.com/2021/05/24/C2mbP.png" alt="C2mbP.png" border="0" /></center>
 
+<center><a href="https://sm.ms/image/wTGMtsO1QhJc8gd" target="_blank"><img src="https://i.loli.net/2021/05/25/wTGMtsO1QhJc8gd.png" ></a></center>
+
+RPC框架是传统单体应用向微服务应用转变过程中必不可少的工具，RPC更有利于服务拆分，将原本耦合度高，扩展性差、复杂度高和稳定性差的单体应用变成一个高内聚低耦合的微服务应用。总结起来，RPC使得开发人员更加专注自己的业务开发、有效的屏蔽了技术细节、提升开发效率、运维方便
+
 ### 流动计算架构
 
 当服务越来越多，容量的评估，小服务资源的浪费等问题逐渐显现，此时需增加一个调度中心基于访问压力实时管理集群容量，提高集群利用率。此时，用于提高机器利用率的<font color="red">资源调度和治理中心(SOA)[ Service Oriented Architecture]</font>是关键
 
 <center><img src="https://i.im5i.com/2021/05/24/C2xiD.png" alt="C2xiD.png" border="0" /></center>
+
+<center><a href="https://sm.ms/image/hAL4ic7yp918eRf" target="_blank"><img src="https://i.loli.net/2021/05/25/hAL4ic7yp918eRf.png" ></a></center>
 
 # RPC
 
@@ -85,7 +91,34 @@ RPC（Remote Procedure Call）是指**远程过程调用**，是一种进程间�
 
 <center><img src="https://i.im5i.com/2021/05/24/C2AQj.png" alt="C2AQj.png" border="0" /></center>
 
+1. client以本地调用方式调用服务
+2. Client stub将调用方法、参数做封装序列化发起网络请求
+3. 数据通过网络传输
+4. Server stub收到网络消息后进行解码、反序列化
+5. server stub根据解码结果调用本地服务
+6. 本地服务执行并将结果返回给server stub
+7. server stub将返回结果打包成消息并发送至消费方
+8. 数据通过网络传输
+9. client stub接收到消息，并进行解码
+10. 服务消费方得到最终结果
+
 <center><img src="https://i.im5i.com/2021/05/24/C2LBS.png" alt="C2LBS.png" border="0" /></center>
+
+### RPC核心要素
+
+### 序列化和反序列化
+
+序列化和反序列化的常见方案（协议）有：***XML、Json、Thrift、Protobuf***
+
+### 网络传输和IO模型
+
+网络协议：TCP、HTTP
+
+IO模型：BIO、NIO
+
+### 服务的注册和发现
+
+为了实现高可用和服务的实时监控，服务的提供方需要向服务注册中心暴露其提供的接口，当服务发生变更时要及时通知服务调用方也需要通过服务注册中心来实现。服务注册中心主要提供服务注册能力、服务心跳监控和服务的变更通知（***register、subscribe、notify***）
 
 # Reference
 
