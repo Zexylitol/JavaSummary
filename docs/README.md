@@ -75,6 +75,7 @@
 - [二叉树](LeetCode/二叉树.md)
 - [二分](LeetCode/二分.md)
 - [数学](LeetCode/数学.md)
+- [栈](LeetCode/栈.md)
 
 # 计算机网络
 

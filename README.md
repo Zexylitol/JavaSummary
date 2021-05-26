@@ -80,6 +80,7 @@
 - [二叉树](docs/LeetCode/二叉树.md)
 - [二分](docs/LeetCode/二分.md)
 - [数学](docs/LeetCode/数学.md)
+- [栈](docs/LeetCode/栈.md)
 
 # 计算机网络
 
