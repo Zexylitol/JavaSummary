@@ -428,6 +428,14 @@ public interface UserDAO {
      */
     int addUser2(Map<String, Object> map);
     User getUserById2(Map<String, Object> map);
+    
+    /**
+     * 分页查询
+     * 减少数据量
+     * @param map
+     * @return
+     */
+    List<User> getUserByLimit(Map<String, Integer> map);
 }
 
 ```
@@ -471,6 +479,11 @@ public interface UserDAO {
 
     <select id="getUserLike" resultType="com.pojo.User">
         select * from mybatis.user where name like "%"#{value}"%"
+    </select>
+    
+    <select id="getUserByLimit" parameterType="map"
+            resultType="com.pojo.User">
+        select * from mybatis.user limit #{startIndex},#{pageSize}
     </select>
 </mapper>
 ```
@@ -601,6 +614,22 @@ public class UserDAOTest {
         SqlSession sqlSession = MybatisUtils.getSqlSession();
         SqlSession sqlSession1 = MybatisUtils.getSqlSession();
         System.out.println(sqlSession == sqlSession1);  // false
+    }
+    
+    @Test
+    public void getByLimit(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserDAO mapper = sqlSession.getMapper(UserDAO.class);
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put("startIndex", 1);
+        map.put("pageSize", 2);
+        List<User> userList = mapper.getUserByLimit(map);
+
+        for(User user:userList){
+            System.out.println(user);
+        }
+
+        sqlSession.close();
     }
 }
 ```
