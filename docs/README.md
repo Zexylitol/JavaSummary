@@ -110,6 +110,7 @@
 - Mybatis
   - [Mybatis入门](框架/Mybatis/Mybatis入门.md)
   - [Mybatis的XML配置解析](框架/Mybatis/Mybatis的XML配置解析.md)
+  - [Mybatis之生命周期和作用域](框架/Mybatis之生命周期和作用域.md)
 
 
 
