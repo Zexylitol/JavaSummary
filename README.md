@@ -112,6 +112,7 @@
 - [RPC由浅入深](docs/框架/RPC由浅入深.md)
 - Mybatis
   - [Mybatis入门](docs/框架/Mybatis/Mybatis入门.md)
+  - [Mybatis的XML配置解析](docs/框架/Mybatis/Mybatis的XML配置解析.md)
 
 
 
