@@ -130,6 +130,10 @@
     - [Spring的AOP简介](docs/框架/Spring/AOP/Spring的AOP简介.md)
     - [基于XML的AOP开发](docs/框架/Spring/AOP/基于XML的AOP开发.md)
     - [基于注解的AOP开发](docs/框架/Spring/AOP/基于注解的AOP开发.md)
+- 微服务
+  - [服务发现](docs/框架/微服务/服务发现.md)
+  - [配置管理](docs/框架/微服务/配置管理.md)
+  - [负载均衡](docs/框架/微服务/负载均衡.md)
 
 # 工具
 
