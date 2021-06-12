@@ -6,7 +6,9 @@
     - [Java中Comparable和Comparator的区别](Java基础/Java中Comparable和Comparator的区别.md)
     - [Java包装类详解（一）](Java基础/Java包装类详解（一）.md)
     - [Java包装类详解（二）](Java基础/Java包装类详解（二）.md)
-    - [注解](Java基础/注解.md)
+    - 注解
+      - [注解简介](Java基础/注解简介.md)
+      - [解析注解](Java基础/解析注解.md)
   - Java并发
     - [ConcurrentHashMap源码分析](Java并发/ConcurrentHashMap源码分析.md)
     - [synchronized原理](Java并发/synchronized原理.md)
