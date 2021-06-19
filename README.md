@@ -89,6 +89,7 @@
 - [双指针](docs/LeetCode/双指针.md)
 - [滑动窗口](docs/LeetCode/滑动窗口.md)
 - [原地哈希](docs/LeetCode/原地哈希.md)
+- [前缀和](docs/LeetCode/前缀和.md)
 
 # 计算机网络
 
