@@ -94,6 +94,7 @@
 - [原地哈希](docs/LeetCode/原地哈希.md)
 - [前缀和](docs/LeetCode/前缀和.md)
 - [回溯](docs/LeetCode/回溯.md)
+- [贪心](docs/LeetCode/贪心.md)
 
 # 计算机网络
 
