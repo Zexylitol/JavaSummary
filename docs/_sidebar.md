@@ -53,10 +53,12 @@
   - [二分](LeetCode/二分.md)
   - [数学](LeetCode/数学.md)
   - [栈](LeetCode/栈.md)
+  - [队列](LeetCode/队列.md)
   - [双指针](LeetCode/双指针.md)
   - [滑动窗口](LeetCode/滑动窗口.md)
   - [原地哈希](LeetCode/原地哈希.md)
   - [前缀和](LeetCode/前缀和.md)
+  - [小技巧](LeetCode/小技巧.md)
 - 数据库
   - [重学SQL](数据库/重学SQL.md)
   - [JDBC核心技术](数据库/JDBC核心技术.md)
