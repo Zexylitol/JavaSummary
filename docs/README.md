@@ -68,6 +68,8 @@
 
 # LeetCode
 
+- [小技巧](LeetCode/小技巧.md)
+
 - [动态规划](LeetCode/动态规划/动态规划.md)
   - 背包问题
     - [01背包问题](LeetCode/动态规划/01背包问题.md)
@@ -86,7 +88,7 @@
 - [滑动窗口](LeetCode/滑动窗口.md)
 - [原地哈希](LeetCode/原地哈希.md)
 - [前缀和](LeetCode/前缀和.md)
-- [小技巧](LeetCode/小技巧.md)
+- [回溯](LeetCode/回溯.md)
 
 # 计算机网络
 
