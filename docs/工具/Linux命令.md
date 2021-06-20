@@ -37,6 +37,34 @@ ps [options] [--help]
 ps -ef | grep redis-
 ```
 
+## netstat
+
+Linux netstat 命令用于显示网络状态。
+
+```shell
+netstat [-acCeFghilMnNoprstuvVwx][-A<网络类型>][--ip]
+```
+
+| 参数           | 说明                                     |
+| :------------- | :--------------------------------------- |
+| -a或--all      | 显示所有连线中的Socket                   |
+| -n或--numeric  | 直接使用IP地址，而不通过域名服务器       |
+| -p或--programs | 显示正在使用Socket的程序识别码和程序名称 |
+
+1. 查看3306端口的网络状态
+
+   ```shell
+   netstat -anp | grep 3306
+   ```
+
+2. 显示详细的网络状况
+
+   ```shell
+   netstat -a
+   ```
+
+   
+
 ## ls
 
 ls（英文全拼：list files）命令用于显示指定工作目录下之内容
