@@ -64,6 +64,7 @@
   - [贪心](LeetCode/贪心.md)
   - [BFS](LeetCode/BFS.md)
   - [DFS](LeetCode/DFS.md)
+  - [排序](LeetCode/排序.md)
 - 数据库
   - [重学SQL](数据库/重学SQL.md)
   - [JDBC核心技术](数据库/JDBC核心技术.md)
