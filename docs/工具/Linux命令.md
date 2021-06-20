@@ -37,6 +37,31 @@ ps [options] [--help]
 ps -ef | grep redis-
 ```
 
+## pstree
+
+pstree 命令以树状图的方式展现进程之间的派生关系
+
+```shell
+pstree [OPTIONS]
+```
+
+| 参数 | 说明                   |
+| :--- | :--------------------- |
+| -a   | 显示每个程序的完整指令 |
+| -p   | 显示程序识别码         |
+
+1. 显示系统当前所有进程的进程ID和进程号
+
+   ```shell
+   pstree -p
+   ```
+
+2. 计算进程号5240下的线程数
+
+   ```shell
+   pstree -p 5240 | wc -l
+   ```
+
 ## netstat
 
 Linux netstat 命令用于显示网络状态。
@@ -63,7 +88,119 @@ netstat [-acCeFghilMnNoprstuvVwx][-A<网络类型>][--ip]
    netstat -a
    ```
 
+3. 查看系统所有的网络服务
+
+   ```shell
+   netstat -anp | more
+   ```
+
+## top
+
+Linux top命令用于实时显示 process 的动态
+
+```shell
+top [选项]
+```
+
+| 参数    | 说明                                       |
+| :------ | :----------------------------------------- |
+| -d 秒数 | 指定top命令每隔几秒更新，默认是3秒         |
+| -i      | 使top不显示任何闲置或者僵死进程            |
+| -p PID  | 通过指定监控进程ID来仅仅监控某个进程的状态 |
+
+| 交互操作 | 说明                  |
+| :------- | :-------------------- |
+| p        | 以CPU使用率排序，默认 |
+| M        | 以内存使用率排序      |
+| N        | 以PID排序             |
+| q        | 退出top               |
+
+
+
+1. 显示指定的进程信息
+
+   ```shell
+   top -p PID
+   ```
+
+2. 解析top输出
+
+   ```shell
+   top - 02:47:51 up 37 min,  1 user,  load average: 0.00, 0.00, 0.02
+   Tasks: 242 total,   1 running, 163 sleeping,   0 stopped,   0 zombie
+   %Cpu(s):  0.1 us,  0.5 sy,  0.0 ni, 99.4 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+   KiB Mem :  4015904 total,  1655948 free,   777556 used,  1582400 buff/cache
+   KiB Swap:  4191228 total,  4191228 free,        0 used.  2836412 avail Mem 
    
+      PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND    
+     1213 root      20   0  389412  83488  33308 S   2.3  2.1   0:10.04 Xorg       
+    13262 yzz       20   0  682280  44216  35540 S   1.3  1.1   0:02.09 gnome-ter+ 
+    12968 yzz       20   0 1296116 123296  86824 S   0.3  3.1   0:10.12 compiz     
+    13606 yzz       20   0   43648   4172   3456 R   0.3  0.1   0:00.26 top        
+        1 root      20   0  185436   6000   4008 S   0.0  0.1   0:04.98 systemd    
+        2 root      20   0       0      0      0 S   0.0  0.0   0:00.08 kthreadd   
+        4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 kworker/0+ 
+        6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 mm_percpu+ 
+        7 root      20   0       0      0      0 S   0.0  0.0   0:00.08 ksoftirqd+ 
+        8 root      20   0       0      0      0 I   0.0  0.0   0:00.49 rcu_sched  
+   ```
+
+   - `top - 02:47:51 up 37 min,  1 user,  load average: 0.00, 0.00, 0.02`
+
+     - 表示系统的运行时间和平均负载
+     - 当前时间
+     - 系统已运行的时间
+     - 当前登录用户的数量
+     - 相应最近5、10和15分钟内的平均负载
+
+   - `Tasks: 242 total,   1 running, 163 sleeping,   0 stopped,   0 zombie`
+
+     - 显示全部进程的数量，正在运行、睡眠、停止、僵尸进程的数量
+
+   - `%Cpu(s):  0.1 us,  0.5 sy,  0.0 ni, 99.4 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st`
+
+     - 表示CPU状态，显示了不同模式下所占CPU时间的百分比
+     - us, user： 运行(未调整优先级的) 用户进程的CPU时间
+     - sy，system: 运行内核进程的CPU时间
+     - ni，niced：运行已调整优先级的用户进程的CPU时间
+     - wa，IO wait: 用于等待IO完成的CPU时间
+     - hi：处理硬件中断的CPU时间
+     - si: 处理软件中断的CPU时间
+     - st：这个虚拟机被hypervisor偷去的CPU时间（译注：如果当前处于一个hypervisor下的vm，实际上hypervisor也是要消耗一部分CPU处理时间的）
+
+   - ````shell
+     KiB Mem :  4015904 total,  1655948 free,   777556 used,  1582400 buff/cache
+     KiB Swap:  4191228 total,  4191228 free,        0 used.  2836412 avail Mem 
+     ````
+
+     - 显示内存使用率, 第一行是物理内存使用，第二行是虚拟内存使用(交换空间)
+     - 物理内存显示如下：全部可用内存、已使用内存、空闲内存、缓冲内存
+     - 交换部分显示的是：全部、已使用、空闲和缓冲交换空间
+
+   - ```shell
+      PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND    
+     1213 root      20   0  389412  83488  33308 S   2.3  2.1   0:10.04 Xorg  
+     ```
+
+     - PID：进程ID，进程的唯一标识符
+     - USER：进程所有者的实际用户名
+     - PR：进程的调度优先级。这个字段的一些值是’rt’。这意味这这些进程运行在实时态
+     - NI：进程的nice值（优先级）。越小的值意味着越高的优先级
+     - VIRT：进程使用的虚拟内存
+     - RES：驻留内存大小。驻留内存是任务使用的非交换物理内存大小
+     - SHR：进程使用的共享内存
+     - S：进程的状态，有以下不同的值:
+       - D – 不可中断的睡眠态。
+       - R – 运行态
+       - S – 睡眠态
+       - T – 被跟踪或已停止
+       - Z – 僵尸态
+     - %CPU：自从上一次更新时到现在任务所使用的CPU时间百分比
+     - %MEM：进程使用的可用物理内存百分比
+     - TIME+：任务启动后到现在所使用的全部CPU时间，精确到百分之一秒
+     - COMMAND：运行进程所使用的命令
+
+
 
 ## ls
 
@@ -211,6 +348,34 @@ ps -ef | less
 ```shell
 history | less
 ```
+
+## mv
+
+Linux mv（英文全拼：move file）命令用来为文件或目录改名、或将文件或目录移入其它位置。
+
+```shell
+mv [options] source dest
+mv [options] source... directory
+```
+
+| 参数 | 说明                                                         |
+| :--- | :----------------------------------------------------------- |
+| -b   | 当目标文件或目录存在时，在执行覆盖前，会为其创建一个备份     |
+| -i   | 如果指定移动的源目录或文件与目标的目录或文件同名，则会先询问是否覆盖旧文件，输入 y 表示直接覆盖，输入 n 表示取消该操作。 |
+| -f   | 如果指定移动的源目录或文件与目标的目录或文件同名，不会询问，直接覆盖旧文 |
+| -n   | 不要覆盖任何已存在的文件或目录                               |
+
+1. 将文件 aaa 改名为 bbb 
+
+   ```shell
+   mv aaa bbb
+   ```
+
+2. 将 /usr/runoob 下的所有文件和目录移到当前目录下
+
+   ```shell
+   mv /usr/runoob/* .
+   ```
 
 
 
