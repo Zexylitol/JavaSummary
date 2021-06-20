@@ -74,7 +74,6 @@
 # LeetCode
 
 - [小技巧](docs/LeetCode/小技巧.md)
-
 - [动态规划](LeetCode/动态规划/动态规划.md)
   - 背包问题
     - [01背包问题](docs/LeetCode/动态规划/01背包问题.md)
@@ -97,6 +96,7 @@
 - [回溯](docs/LeetCode/回溯.md)
 - [贪心](docs/LeetCode/贪心.md)
 - [BFS](docs/LeetCode/BFS.md)
+- [DFS](docs/LeetCode/DFS.md)
 
 # 计算机网络
 
