@@ -7,7 +7,11 @@ mysql -hlocalhost -P3306 -uroot -p1997
 mysql -uroot -p1997
 ```
 
+# 重置密码
 
+```mysql
+mysqladmin -u root password root
+```
 
 # 退出
 ```shell
