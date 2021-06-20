@@ -33,7 +33,16 @@ mysql --version
 mysql -V
 ```
 
+# 备份数据库
+
+```mysql
+mysqldump -u用户名 -p密码   --databases 数据库名 > 保存路径
+```
+
+
+
 # MySQL的语法规范
+
 1.不区分大小写,但建议关键字大写，表名、列名小写
 
 2.每条命令最好用分号结尾
