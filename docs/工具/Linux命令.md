@@ -377,7 +377,43 @@ mv [options] source... directory
    mv /usr/runoob/* .
    ```
 
+## df
 
+Linux df（英文全拼：disk free） 命令用于显示目前在 Linux 系统上的文件系统磁盘使用情况统计
+
+```shell
+df [选项]... [FILE]...
+```
+
+1. 查看文件系统分区的容量（以可读的形式）
+
+   ```shell
+   df -h
+   ```
+
+## du
+
+Linux du （英文全拼：disk usage）命令用于显示目录或文件的大小。
+
+du 会显示指定的目录或文件所占用的磁盘空间
+
+```shell
+du [-abcDhHklmsSx][-L <符号连接>][-X <文件>][--block-size][--exclude=<目录或文件>][--max-depth=<目录层数>][--help][--version][目录或文件]
+```
+
+| 参数                   | 说明                                                         |
+| :--------------------- | :----------------------------------------------------------- |
+| -x或--one-file-xystem  | 以一开始处理时的文件系统为准，若遇上其它不同的文件系统目录则略过 |
+| -h或--human-readable   | 以K，M，G为单位，提高信息的可读性                            |
+| --max-depth=<目录层数> | 超过指定层数的目录后，予以忽略                               |
+
+1. 查看当前路径下的文件占用空间大小
+
+   ```shell
+   du -h -x --max-depth=1
+   ```
+
+   
 
 # vim命令
 
