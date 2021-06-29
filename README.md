@@ -71,6 +71,7 @@
 - [JDBC核心技术](docs/数据库/JDBC核心技术.md)
 - [事务](docs/数据库/事务.md)
 - [索引](docs/数据库/索引.md)
+- [MySQL乐观锁与悲观锁应用](docs/数据库/MySQL乐观锁与悲观锁应用.md)
 
 # LeetCode
 
