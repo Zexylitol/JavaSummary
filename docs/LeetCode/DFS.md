@@ -2,6 +2,7 @@
 
 - [LeetCode 22. 括号生成](#LeetCode-22-括号生成)
 - [LeetCode 129. 求根节点到叶子节点数字之和](#LeetCode-129-求根节点到叶子节点数字之和)
+- [LCP 07. 传递信息](#LCP-07-传递信息)
 
 <!-- GFM-TOC -->
 
@@ -159,6 +160,87 @@ class Solution {
 }
 ```
 
+# LCP 07. 传递信息
+
+- DFS
+
+**解题思路**
+
+\1. 每个小朋友可看成一个顶点；
+
+\2. A、B小朋友之间可传递信息，可看成A、B之间有一条单向边
+
+\3. 根据$relation$数组构造每个顶点的边集合
+
+\4. 从0号小朋友开始遍历：
+
+​    1）遍历结束条件：遍历了k轮且信息到达了n-1号小朋友，方案数+1
+
+​    2）若遍历了k轮，信息没有到达n-1号小朋友，则返回
+
+​    3）遍历当前小朋友可以将信息传递到的小朋友
+
+```java
+class Solution {
+    int res = 0;
+    public int numWays(int n, int[][] relation, int k) {
+        List<List<Integer>> edges = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            edges.add(new ArrayList<>());
+        }
+        for (int[] r : relation) {
+            int a = r[0];
+            int b = r[1];
+            // 小朋友a可以将信息传递到小朋友b
+            edges.get(a).add(b);
+        }
+        // 从0号小朋友开始遍历，计算经过k轮可以将信息传递到n-1号小朋友的方案数
+        dfs(edges, 0, k);
+        return res;
+    }
+
+    public void dfs(List<List<Integer>> edges, int n,int k) {
+        // 找到一种方案数
+        if (n == edges.size() - 1 && k == 0) {
+            res++;
+            return ;
+        }
+        
+        // 最多遍历k轮
+        if (k <= 0) {
+            return ;
+        }
+
+        // 遍历当前小朋友可以将信息传递到的顶点
+        List<Integer> edge = edges.get(n);
+        for (Integer e : edge) {
+            dfs(edges, e, k - 1);
+        }
+    }
+}
+```
+
+
+
+- 动态规划
+
+```java
+class Solution {
+    public int numWays(int n, int[][] relation, int k) {
+        // 动态规划
+      	// dp[i][j] 为经过i轮传递到编号j的玩家的方案数
+        int[][] dp = new int[k + 1][n];
+        dp[0][0] = 1;
+        for (int i = 0; i < k; i++) {
+            for (int[] r : relation) {
+                int src = r[0], dst = r[1];
+                dp[i + 1][dst] += dp[i][src];
+            }
+        }
+        return dp[k][n-1];
+    }
+}
+```
 
 
 
