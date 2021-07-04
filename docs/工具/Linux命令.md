@@ -292,6 +292,38 @@ tail -n 20 info.log
 tail -f filename
 ```
 
+3.  倒数100行并写入实时监听文件写入模式
+
+```shell
+tail -100f  xxx.log
+```
+
+## grep
+
+Linux grep 命令用于查找文件里符合条件的字符串。
+
+```shell
+grep [-abcEFGhHilLnqrsvVwxy][-A<显示行数>][-B<显示列数>][-C<显示列数>][-d<进行动作>][-e<范本样式>][-f<范本文件>][--help][范本样式][文件或目录...]
+```
+
+| 参数                | 说明                 |
+| :------------------ | :------------------- |
+| -i 或 --ignore-case | 忽略字符大小写的差别 |
+| -c 或 --count       | 计算符合样式的列数   |
+
+1. 日志查找
+
+```shell
+grep forest xxx.log  
+grep forest xxx.log yyy.log #多日志查找
+```
+
+2. 管道过滤关键字
+
+```shell
+ cat xxx.log | grep -i 'keyword' 
+```
+
 ## more
 
 Linux more 命令类似 cat ，不过会以一页一页的形式显示，更方便使用者逐页阅读，而最基本的指令就是按空白键（space）就往下一页显示，按 b 键就会往回（back）一页显示，而且还有搜寻字串的功能（与 vi 相似），使用中的说明文件，请按 h ，q 退出 more，= 输出当前行的行号
