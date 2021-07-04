@@ -166,6 +166,7 @@
 - [Linux命令](docs/工具/Linux命令.md)
 - [Git命令](docs/工具/Git命令.md)
 - [IntelliJ IDEA必备插件](docs/工具/IntelliJIDEA必备插件.md)
+- [IntelliJ IDEA快捷键](docs/工具/IDEA快捷键.md)
 - [Arthas](docs/工具/Arthas.md)
 
 
