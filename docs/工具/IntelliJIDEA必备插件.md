@@ -68,3 +68,14 @@ jclasslib bytecode viewer 是一个可以可视化已编译Java类文件和所�
 
 类似`javap`指令
 
+# Rainbow Brackets
+
+彩虹颜色的括号，看着很舒服，敲代码效率变高
+
+<center><img src="https://ss.im5i.com/2021/07/17/gmGfW.png" alt="gmGfW.png" border="0" /></center>
+
+# Translation
+
+翻译插件
+
+<center><img src="https://ss.im5i.com/2021/07/17/gmK2G.png" alt="gmK2G.png" border="0" /></center>
