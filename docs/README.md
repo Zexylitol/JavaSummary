@@ -71,6 +71,7 @@
 - [分库分表](数据库/分库分表.md)
 - Redis
   - [Redis简介](数据库/Redis/Redis简介.md)
+  - [Redis中的数据结构](数据库/Redis/Redis中的数据结构.md)
 
 # LeetCode
 
