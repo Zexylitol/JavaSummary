@@ -74,6 +74,8 @@
 - [MySQL乐观锁与悲观锁应用](docs/数据库/MySQL乐观锁与悲观锁应用.md)
 - [读写分离](docs/数据库/读写分离.md)
 - [分库分表](docs/数据库/分库分表.md)
+- Redis
+  - [Redis简介](docs/数据库/Redis/Redis简介.md)
 
 # LeetCode
 
