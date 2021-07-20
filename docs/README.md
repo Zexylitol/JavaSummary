@@ -72,6 +72,7 @@
 - Redis
   - [Redis简介](数据库/Redis/Redis简介.md)
   - [Redis中的数据结构](数据库/Redis/Redis中的数据结构.md)
+  - [缓存雪崩、击穿、穿透](数据库/Redis/缓存雪崩、击穿、穿透.md)
 
 # LeetCode
 
