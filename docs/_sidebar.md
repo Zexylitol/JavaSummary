@@ -75,8 +75,9 @@
   - [分库分表](数据库/分库分表.md)
   - Redis
     - [Redis简介](数据库/Redis/Redis简介.md)
-    - [Redis中的数据结构](数据库/Redis/Redis中的数据结构.md)
+    - [Redis中的数据结构](数据库/Redis/redis中的数据结构.md)
     - [缓存雪崩、击穿、穿透](数据库/Redis/缓存雪崩、击穿、穿透.md)
+    - [使用Redis实现分布式锁](数据库/Redis/使用Redis实现分布式锁.md)
 - 设计模式
   - [设计模式概述与分类](设计模式/设计模式概述与分类.md)
   - [UML图及类图](设计模式/UML图及类图.md)
