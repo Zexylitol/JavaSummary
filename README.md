@@ -81,6 +81,7 @@
   - [Redis中的数据结构](数据库/Redis/redis中的数据结构.md)
   - [缓存雪崩、击穿、穿透](docs/数据库/Redis/缓存雪崩、击穿、穿透.md)
   - [使用Redis实现分布式锁](docs/数据库/Redis/使用Redis实现分布式锁.md)
+  - [Redis内存淘汰策略](docs/数据库/Redis/Redis内存淘汰策略.md)
 
 # LeetCode
 
