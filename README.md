@@ -83,6 +83,8 @@
   - [缓存雪崩、击穿、穿透](docs/数据库/Redis/缓存雪崩、击穿、穿透.md)
   - [使用Redis实现分布式锁](docs/数据库/Redis/使用Redis实现分布式锁.md)
   - [Redis内存淘汰策略](docs/数据库/Redis/Redis内存淘汰策略.md)
+  - [Redis持久化：AOF](docs/数据库/Redis/Redis持久化：AOF.md)
+  - [Redis持久化：RDB](docs/数据库/Redis/Redis持久化：RDB.md)
 
 # LeetCode
 
