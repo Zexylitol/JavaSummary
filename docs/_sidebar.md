@@ -84,6 +84,7 @@
     - [Redis内存淘汰策略](数据库/Redis/Redis内存淘汰策略.md)
     - [Redis持久化：AOF](数据库/Redis/Redis持久化：AOF.md)
     - [Redis持久化：RDB](数据库/Redis/Redis持久化：RDB.md)
+    - [Redis主从复制](数据库/Redis/Redis主从复制.md)
 - 设计模式
   - [设计模式概述与分类](设计模式/设计模式概述与分类.md)
   - [UML图及类图](设计模式/UML图及类图.md)
