@@ -81,6 +81,7 @@
   - [Redis持久化：AOF](数据库/Redis/Redis持久化：AOF.md)
   - [Redis持久化：RDB](数据库/Redis/Redis持久化：RDB.md)
   - [Redis主从复制](数据库/Redis/Redis主从复制.md)
+  - [Redis哨兵机制](数据库/Redis/Redis哨兵机制.md)
 
 # LeetCode
 
