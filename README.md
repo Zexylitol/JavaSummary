@@ -39,6 +39,7 @@
 ## Java并发
 
 - [Java创建线程的4种方式](docs/Java并发/Java创建线程的4种方式.md)
+- [Java线程池](docs/Java并发/Java线程池.md)
 - [ConcurrentHashMap源码分析](docs/Java并发/ConcurrentHashMap源码分析.md)
 - [synchronized原理](docs/Java并发/synchronized原理.md)
 - [happens-before](docs/Java并发/happens-before.md)
