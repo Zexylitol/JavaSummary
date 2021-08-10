@@ -125,6 +125,7 @@
 - [TCP/IP与OSI参考模型](docs/计算机网络/TCP-IP与OSI参考模型.md)
 - [IPv4首部](docs/计算机网络/IPv4首部)
 - [TCP三次握手及四次挥手](docs/计算机网络/TCP三次握手及四次挥手.md)
+- [TCP的可靠传输](docs/计算机网络/TCP的可靠传输.md)
 - [HTTP协议简介](docs/计算机网络/HTTP协议简介.md)
 
 # 操作系统
