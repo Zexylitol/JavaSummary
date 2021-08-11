@@ -5,6 +5,7 @@
 - [LeetCode 111 二叉树的最小深度](#LeetCode-111-二叉树的最小深度)
 - [LeetCode 752 打开转盘锁](#LeetCode-752-打开转盘锁)
 - [检测循环依赖](#检测循环依赖)
+- [LeetCode 207. 课程表](#LeetCode-207-课程表)
 - [LeetCode 210. 课程表II](#LeetCode-210-课程表II)
 
 <!-- GFM-TOC -->
@@ -270,9 +271,82 @@ public class CyclicDependency {
 }
 ```
 
+# LeetCode 207. 课程表
+
+- https://mp.weixin.qq.com/s/7nP92FhCTpTKIAplj_xWpA
+- 判断优有向图是否存在环
+
+```java
+// 建图
+List<Integer>[] buildGraph(int numCourses, int[][] prerequisites) {
+    // 图中共有 numCourses 个节点
+    // 邻接表
+    List<Integer>[] graph = new LinkedList[numCourses];
+    for (int i = 0; i < numCourses; i++) {
+        graph[i] = new LinkedList<>();
+    }
+    for (int[] edge : prerequisites) {
+        int from = edge[1];
+        int to = edge[0];
+        // 修完课程 from 才能修课程 to
+        // 在图中添加一条从 from 指向 to 的有向边
+        graph[from].add(to);
+    }
+    return graph;
+}
+// 记录一次 traverse 递归经过的节点
+boolean[] onPath;
+// 记录遍历过的节点，防止重复遍历同一个节点
+boolean[] visited;
+// 记录图中是否有环
+boolean hasCycle = false;
+
+boolean canFinish(int numCourses, int[][] prerequisites) {
+    List<Integer>[] graph = buildGraph(numCourses, prerequisites);
+
+    visited = new boolean[numCourses];
+    onPath = new boolean[numCourses];
+
+    for (int i = 0; i < numCourses; i++) {
+        // 遍历图中的所有节点
+        traverse(graph, i);
+    }
+    // 只要没有循环依赖可以完成所有课程
+    return !hasCycle;
+}
+
+void traverse(List<Integer>[] graph, int s) {
+    if (onPath[s]) {
+        // 出现环
+        hasCycle = true;
+    }
+
+    if (visited[s] || hasCycle) {
+        // 如果已经找到了环，也不用再遍历了
+        return;
+    }
+    // 前序遍历代码位置
+    visited[s] = true;
+    onPath[s] = true;
+    for (int t : graph[s]) {
+        traverse(graph, t);
+    }
+    // 后序遍历代码位置
+    onPath[s] = false;
+}
+```
+
+
+
 # LeetCode 210. 课程表II
 
-- 拓扑排序
+- 拓扑排序（Topological Sorting）
+
+<center><img src="https://bkimg.cdn.bcebos.com/pic/cefc1e178a82b9010d8c4f1b708da9773912eff1?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U4MA==,g_7,xp_5,yp_5/format,f_auto"/></center>
+
+> **直观地说就是，让你把一幅图「拉平」，而且这个「拉平」的图里面，所有箭头方向都是一致的**，比如上图所有箭头都是朝右的
+>
+> 很显然，如果一幅有向图中存在环，是无法进行拓扑排序的，因为肯定做不到所有箭头方向一致；反过来，如果一幅图是「有向无环图」，那么一定可以进行拓扑排序。
 
 给定一个包含 $n$ 个节点的有向图 $G$，我们给出它的节点编号的一种排列，如果满足：
 
@@ -348,4 +422,79 @@ class Solution {
 }
 ```
 
+- 方法二：拓扑排序就是后序遍历反转之后的结果
+
+> https://mp.weixin.qq.com/s/7nP92FhCTpTKIAplj_xWpA
+
+> **将后序遍历的结果进行反转，就是拓扑排序的结果**
+>
+> 二叉树的后序遍历是什么时候？遍历完左右子树之后才会执行后序遍历位置的代码。换句话说，当左右子树的节点都被装到结果列表里面了，根节点才会被装进去。
+>
+> **后序遍历的这一特点很重要，之所以拓扑排序的基础是后序遍历，是因为一个任务必须在等到所有的依赖任务都完成之后才能开始开始执行**。
+>
+> 总之，你记住拓扑排序就是后序遍历反转之后的结果，且拓扑排序只能针对有向无环图，进行拓扑排序之前要进行环检测
+
+```java
+class Solution {
+    boolean[] visited;
+    boolean[] onPath;
+    boolean hasCycle;
+    List<Integer> postOrder;
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        visited = new boolean[numCourses];
+        onPath = new boolean[numCourses];
+        postOrder = new ArrayList<>();
+        hasCycle = false;
+        List<Integer>[] graph = buildGraph(numCourses, prerequisites);
+        for (int i = 0; i < numCourses; i++) {
+            traverse(graph, i);
+        }
+        if (hasCycle) {
+            return new int[0];
+        }
+
+        // 将后序遍历结果反转，转化成 int[] 类型
+        Collections.reverse(postOrder);
+        int[] res = new int[numCourses];
+        for (int i = 0; i < postOrder.size(); i++) {
+            res[i] = postOrder.get(i);
+        }
+        return res;
+    }
+
+    public void traverse(List<Integer>[] graph, int s) {
+        if (onPath[s]) {
+            hasCycle = true;
+            return ;
+        }
+
+        if (visited[s] || hasCycle) {
+            return ;
+        }
+
+        visited[s] = true;
+        onPath[s] = true;
+        for (int t : graph[s]) {
+            traverse(graph, t);
+        }
+        // 后序遍历位置
+        onPath[s] = false;
+        postOrder.add(s);
+    }
+
+    // 建图
+    List<Integer>[] buildGraph(int numCourses, int[][] prerequisites) {
+        List<Integer>[] graph = new LinkedList[numCourses];
+        for (int i = 0; i < numCourses; i++) {
+            graph[i] = new LinkedList<>();
+        }
+        for (int[] edge : prerequisites) {
+            int from = edge[1];
+            int to = edge[0];
+            graph[from].add(to);
+        }
+        return graph;
+    }
+}
+```
 
