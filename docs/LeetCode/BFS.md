@@ -106,6 +106,53 @@ class Solution {
 }
 ```
 
+# LeetCode 199 二叉树的右视图
+
+对二叉树进行层序遍历，右视图即为每一层的最后一个遍历到的节点
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.offerLast(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            while (size != 0) {
+                TreeNode node = queue.removeFirst();
+                if (node.left != null) queue.offerLast(node.left);
+                if (node.right != null) queue.offerLast(node.right);
+                if (size == 1) {
+                    res.add(node.val);
+                }
+                size--;
+            }
+        }
+        return res;
+    }
+}
+```
+
+
+
 # LeetCode 752 打开转盘锁
 
 ```java
