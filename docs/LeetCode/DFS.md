@@ -8,6 +8,57 @@
 
 > DFS 算法就是回溯算法
 
+# 模板
+
+- https://mp.weixin.qq.com/s/Bh2huuuK2Z33oULZ7Qtt-Q
+
+```java
+Graph graph;
+// 记录遍历过的节点，用于有环图
+boolean[] visited;
+
+/* 图遍历框架 */
+void traverse(Graph graph, int s) {
+    if (visited[s]) return;
+    // 经过节点 s
+    visited[s] = true;
+    for (TreeNode neighbor : graph.neighbors(s)) {
+        traverse(neighbor);
+    }
+    // 离开节点 s
+    visited[s] = false;   
+}
+```
+
+# LeetCode 797. 所有可能的路径
+
+- 回溯
+
+```java
+class Solution {
+    List<List<Integer>> res = new ArrayList<>();
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+        dfs(0, graph, new ArrayList<>());
+        return res;
+    }
+
+    public void dfs(int v, int[][] graph, List<Integer> path) {
+        if (v == graph.length - 1) {
+            path.add(v);
+            res.add(new ArrayList<>(path));
+            return ;
+        }
+        path.add(v);
+        for (int s : graph[v]) {
+            dfs(s, graph, path);
+            path.remove(path.size() - 1);
+        }
+    }
+}
+```
+
+- https://mp.weixin.qq.com/s/Bh2huuuK2Z33oULZ7Qtt-Q
+
 # LeetCode 22. 括号生成
 
 - https://leetcode-cn.com/problems/generate-parentheses/solution/hui-su-suan-fa-by-liweiwei1419/
