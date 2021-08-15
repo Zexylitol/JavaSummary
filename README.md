@@ -40,6 +40,7 @@
 
 - [Java创建线程的4种方式](docs/Java并发/Java创建线程的4种方式.md)
 - [Java线程池](docs/Java并发/Java线程池.md)
+- [Java线程状态转换](docs/Java并发/Java线程状态转换.md)
 - [ConcurrentHashMap源码分析](docs/Java并发/ConcurrentHashMap源码分析.md)
 - [AQS源码分析](docs/Java并发/AQS源码分析.md)
 - [基于AQS的并发工具类](docs/Java并发/基于AQS的并发工具类.md)

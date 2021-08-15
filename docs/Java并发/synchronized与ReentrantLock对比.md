@@ -31,7 +31,7 @@ synchronized是重量级锁，在JDK1.5之前synchronized是仅有的同步锁�
 
 `synchronized`具备如下特点：
 
-- 不可中断
+- 不可中断（不可中断的意思是等待获取锁的时候不可中断，拿到锁之后可中断，没获取到锁的情况下，中断操作一直不会生效）
 - 非公平锁
 - 可重入
 - `synchronized`是关键字
@@ -159,5 +159,5 @@ public Condition newCondition()  //ReentrantLock支持多个Condition
 # Reference
 
 - [简单聊聊Synchronized和ReentrantLock锁](https://www.cnblogs.com/bianqi/p/12183632.html)
-
 - [synchronized和ReentrantLock的区别和使用](https://mp.weixin.qq.com/s/7JnYqTCqtM7kePqrTB8ZSQ)
+- [synchronized不可中断](https://cloud.tencent.com/developer/article/1622813)
