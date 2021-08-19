@@ -39,11 +39,11 @@
 ZGC支持的平台：
 
 | 平台          | 是否支持 | 当前进度     |
-| ------------- | -------- | ------------ |
+| :------------ | :------- | :----------- |
 | Linux/x64     | Y        | Since JDK 11 |
 | Linux/AArch64 | Y        | Since JDK 13 |
-| macOS         |          | In Progress  |
-| Windows       |          | In Progress  |
+| macOS         | Y        | Since JDK 14 |
+| Windows       | Y        | Since JDK 14 |
 
 # ZGC特性
 
