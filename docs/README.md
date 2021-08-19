@@ -67,6 +67,7 @@
 - [JVM之垃圾收集器：革命性的ZGC](JVM/JVM之垃圾收集器：革命性的ZGC.md)
 - [JVM之MinorGC、MajorGC和FullGC的对比](JVM/JVM之MinorGC、MajorGC和FullGC的对比.md)
 - [G1与CMS的对比](JVM/G1与CMS的对比.md)
+- [Java中几种不同引用](JVM/Java中几种不同引用.md)
 
 
 
