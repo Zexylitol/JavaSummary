@@ -69,6 +69,7 @@
 - [JVM之垃圾回收器：CMS垃圾回收器](docs/JVM/JVM之垃圾回收器：CMS垃圾回收器.md)
 - [JVM之垃圾收集器：G1收集器](docs/JVM/JVM之垃圾收集器：G1收集器.md)
 - [JVM之垃圾回收器：7种经典垃圾回收器总结](docs/JVM/JVM之垃圾回收器：7种经典垃圾回收器总结.md)
+- [JVM之垃圾收集器：革命性的ZGC](docs/JVM/JVM之垃圾收集器：革命性的ZGC.md)
 - [JVM之MinorGC、MajorGC和FullGC的对比](docs/JVM/JVM之MinorGC、MajorGC和FullGC的对比.md)
 - [G1与CMS的对比](docs/JVM/G1与CMS的对比.md)
 
