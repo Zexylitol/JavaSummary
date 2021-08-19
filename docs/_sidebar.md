@@ -22,6 +22,7 @@
     - [synchronized与ReentrantLock对比](Java并发/synchronized与ReentrantLock对比.md)
     - [happens-before](Java并发/happens-before.md)
     - [CPU缓存结构](Java并发/CPU缓存结构.md)
+    - [ThreadLocal详解](Java并发/ThreadLocal详解.md)
 - JVM
   - [虚拟机和Java虚拟机简介](JVM/虚拟机和Java虚拟机简介.md)
   - [JVM之类加载子系统](JVM/JVM之类加载子系统.md)

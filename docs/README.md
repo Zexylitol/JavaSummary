@@ -43,6 +43,7 @@
 - [synchronized与ReentrantLock对比](Java并发/synchronized与ReentrantLock对比.md)
 - [happens-before](Java并发/happens-before.md)
 - [CPU缓存结构](Java并发/CPU缓存结构.md)
+- [ThreadLocal详解](Java并发/ThreadLocal详解.md)
 
 ## JVM
 
