@@ -1,8 +1,11 @@
 <!-- GFM-TOC -->
 
+- [LeetCode 797. 所有可能的路径](#LeetCode-797-所有可能的路径)
+
 - [LeetCode 22. 括号生成](#LeetCode-22-括号生成)
 - [LeetCode 129. 求根节点到叶子节点数字之和](#LeetCode-129-求根节点到叶子节点数字之和)
 - [LCP 07. 传递信息](#LCP-07-传递信息)
+- [Offer 13. 机器人的运动范围](#Offer-13-机器人的运动范围)
 
 <!-- GFM-TOC -->
 
@@ -289,6 +292,53 @@ class Solution {
             }
         }
         return dp[k][n-1];
+    }
+}
+```
+
+# Offer 13. 机器人的运动范围
+
+```java
+class Solution {
+    int res = 0;
+    public int movingCount(int m, int n, int k) {
+        if (k == 0) {
+            return 1;
+        }
+        boolean[][] visited = new boolean[m][n];
+        dfs(m, n, 0, 0, k, visited);
+        return res;
+    }
+
+    public void dfs(int m, int n, int x, int y, int k, boolean[][] visited) {
+        if (x < 0 || x >= m || y < 0 || y >= n || !isLessK(x, y, k) || visited[x][y]) {
+            return ;
+        }
+        res++;
+        visited[x][y] = true;
+        // 上 右 下 左
+        dfs(m, n, x - 1, y, k, visited);
+        dfs(m, n, x, y + 1, k, visited);
+        dfs(m, n, x + 1, y, k, visited);
+        dfs(m, n, x, y - 1, k, visited);
+    }
+
+    public boolean isLessK(int m, int n, int k) {
+        while (m != 0) {
+            k = k - m%10;
+            if (k < 0) {
+                return false;
+            }
+            m = m / 10;
+        }
+        while (n != 0) {
+            k = k - n%10;
+            if (k < 0) {
+                return false;
+            }
+            n = n / 10;
+        }
+        return true;
     }
 }
 ```
