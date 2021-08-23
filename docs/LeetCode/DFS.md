@@ -1,11 +1,11 @@
 <!-- GFM-TOC -->
 
 - [LeetCode 797. 所有可能的路径](#LeetCode-797-所有可能的路径)
-
 - [LeetCode 22. 括号生成](#LeetCode-22-括号生成)
 - [LeetCode 129. 求根节点到叶子节点数字之和](#LeetCode-129-求根节点到叶子节点数字之和)
 - [LCP 07. 传递信息](#LCP-07-传递信息)
 - [Offer 13. 机器人的运动范围](#Offer-13-机器人的运动范围)
+- [面试题 0401. 节点间通路](#面试题-0401-节点间通路)
 
 <!-- GFM-TOC -->
 
@@ -343,5 +343,53 @@ class Solution {
 }
 ```
 
+# 面试题 0401. 节点间通路
 
+节点间通路。给定有向图，设计一个算法，找出两个节点之间是否存在一条路径。
+
+示例1:
+
+> 输入：n = 3, graph = [[0, 1], [0, 2], [1, 2], [1, 2]], start = 0, target = 2
+>  输出：true
+
+**提示：**
+
+1. 节点数量n在[0, 1e5]范围内。
+2. 节点编号大于等于 0 小于 n。
+3. 图中可能存在自环和平行边。
+
+```java
+class Solution {
+    // 访问状态数组
+    private boolean[] visited = null;
+    public boolean findWhetherExistsPath(int n, int[][] graph, int start, int target) {
+        // 创建访问状态数组
+        this.visited = new boolean[graph.length];
+        // DFS
+        return helper(graph, start, target);
+    }
+
+    private boolean helper(int[][] graph, int start, int target) {
+        // 深度优先搜索
+        for (int i = 0; i < graph.length; ++i) {
+            // 确保当前路径未被访问（该判断主要是为了防止图中自环出现死循环的情况）
+            if (!visited[i]) {
+                // 若当前路径起点与终点相符，则直接返回结果
+                if (graph[i][0] == start && graph[i][1] == target) {
+                    return true;
+                }
+                // 设置访问标志
+                visited[i] = true;
+                // DFS关键代码，思路：同时逐渐压缩搜索区间
+                if (graph[i][1] == target && helper(graph, start, graph[i][0])) {
+                    return true;
+                }
+                // 清除访问标志
+                visited[i] = false;
+            }
+        }
+        return false;
+    }
+}
+```
 
