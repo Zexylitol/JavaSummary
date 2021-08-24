@@ -129,6 +129,7 @@
 - [BFS](docs/LeetCode/BFS.md)
 - [DFS](docs/LeetCode/DFS.md)
 - [排序](docs/LeetCode/排序.md)
+- [模拟](docs/LeetCode/模拟.md)
 
 # 计算机网络
 
