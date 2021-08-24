@@ -92,7 +92,7 @@
 - [分库分表](docs/数据库/分库分表.md)
 - Redis
   - [Redis简介](docs/数据库/Redis/Redis简介.md)
-  - [Redis中的数据结构](数据库/Redis/Redis中的数据结构.md)
+  - [Redis中的数据结构](数据库/Redis/redis中的数据结构.md)
   - [缓存雪崩、击穿、穿透](docs/数据库/Redis/缓存雪崩、击穿、穿透.md)
   - [使用Redis实现分布式锁](docs/数据库/Redis/使用Redis实现分布式锁.md)
   - [Redis内存淘汰策略](docs/数据库/Redis/Redis内存淘汰策略.md)
