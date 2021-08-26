@@ -11,7 +11,7 @@
 | Alt + 右方向键       | 回到下一次光标位置                                           |
 | Shift + Enter        | 开始新一行。光标所在行下空出一行，光标定位到新行位置         |
 | Shift + 滚轮前后滚动 | 当前文件的横向滚动轴滚动                                     |
-| Ctrl + Alt + L       | 格式化代码                                                   |
+| Ctrl + Alt + L       | 格式化代码（Code -> Reformat Code）                          |
 | Ctrl + Alt + O       | 优化导入的类                                                 |
 | Ctrl + Alt + V       | 快速引进变量                                                 |
 | Ctrl + Alt + Enter   | 光标所在行上空出一行，光标定位到新行                         |
