@@ -91,6 +91,8 @@
 - [MySQL日志文件](docs/数据库/MySQL日志文件.md)
 - [读写分离](docs/数据库/读写分离.md)
 - [分库分表](docs/数据库/分库分表.md)
+- [慢SQL排查](docs/数据库/慢SQL排查.md)
+- [explain性能分析](docs/数据库/explain性能分析.md)
 - Redis
   - [Redis简介](docs/数据库/Redis/Redis简介.md)
   - [Redis中的数据结构](数据库/Redis/redis中的数据结构.md)
