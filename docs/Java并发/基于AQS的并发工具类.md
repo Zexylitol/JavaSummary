@@ -412,6 +412,6 @@ Process finished with exit code 0
 
 - [Java并发编程的艺术](https://book.douban.com/subject/26591326/)
 
-- [循环屏障CyclicBarrier以及和CountDownLatch的区别]([](https://www.cnblogs.com/twoheads/p/9555867.html))
+- [循环屏障CyclicBarrier以及和CountDownLatch的区别](https://www.cnblogs.com/twoheads/p/9555867.html)
 
 - [黑马程序员Java并发编程](https://www.bilibili.com/video/BV16J411h7Rd)

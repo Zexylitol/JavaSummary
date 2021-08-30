@@ -65,7 +65,7 @@
 
 这种方式在编程中对socket设置O_NONBLOCK即可。但此方式仅仅针对网络IO有效，对磁盘IO并没有作用。因为本地文件IO就没有被认为是阻塞，我们所说的网络IO的阻塞是因为网路IO有无限阻塞的可能，而本地文件除非是被锁住，否则是不可能无限阻塞的，因此只有锁这种情况下，O_NONBLOCK才会有作用。而且，<span style="color:red">磁盘IO时要么数据在内核缓冲区中直接可以返回，要么需要调用物理设备去读取，这时候进程的其他工作都需要等待。因此，后续的IO复用和信号驱动IO对文件IO也是没有意义的</span>。
 
-<center><img src="https://ss.im5i.com/2021/08/29/fUZUG.jpg" alt="fUZUG.jpg" border="0" /></center>
+<center><img src="https://ss.im5i.com/2021/08/30/fU7il.jpg" alt="fU7il.jpg" border="0" /></center>
 
 ## 2.4 IO复用
 
@@ -97,7 +97,7 @@
 - **水平触发**：当就绪的fd（文件描述符）未被用户进程处理，下一次查询依旧会返回，这是`select`和`poll`的触发方式
 - **边缘触发**：无论就绪的fd（文件描述符）是否被处理，下一次不再返回。理论上性能更高，但是实现相当复杂，并且任何意外的丢失事件都会造成请求处理错误。**epoll默认使用水平触发，通过相应选项可以使用边缘触发**
 
-<center><img src="https://ss.im5i.com/2021/08/29/fUiZz.jpg" alt="fUiZz.jpg" border="0" /></center>
+<center><img src="https://ss.im5i.com/2021/08/30/fUOF7.jpg" alt="fUOF7.jpg" border="0" /></center>
 
 ## 2.5 信号驱动
 
@@ -130,3 +130,6 @@
 
 <center><img src="https://ss.im5i.com/2021/08/29/fUAR8.jpg" alt="fUAR8.jpg" border="0" /></center>
 
+# Reference
+
+- [网络IO之阻塞、非阻塞、同步、异步总结](https://www.cnblogs.com/Anker/p/3254269.html)
