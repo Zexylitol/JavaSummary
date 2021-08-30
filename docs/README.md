@@ -86,6 +86,7 @@
 - [读写分离](数据库/读写分离.md)
 - [分库分表](数据库/分库分表.md)
 - [慢SQL排查](数据库/慢SQL排查.md)
+- [慢SQL优化](数据库/慢SQL优化.md)
 - [explain性能分析](数据库/explain性能分析.md)
 - Redis
   - [Redis简介](数据库/Redis/Redis简介.md)
