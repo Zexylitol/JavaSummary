@@ -1,3 +1,12 @@
+- 在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系
+
+- 与程序员密切相关的 happens-before 规则如下：
+
+  - 程序顺序规则：一个线程中的每个操作，happens-before 于该线程中的任意后续操作
+  - 监视器锁规则：对一个锁的解锁，happens-before 于随后对这个锁的加锁
+  - volatile 变量规则：对一个 volatile 域的写，happens-before 于任意后续对这个 volatile 域的读
+  - 传递性：如果 A  happens-before B，且 B happens-before C，那么 A happens-before C
+
 - **happens-before是可见性与有序性的一套规则总结**，规定了对共享变量的写操作对其他线程的读操作可见
 
 - 抛开以下happens-before规则，JMM并不能保证一个线程对共享变量的写，对其它线程对该共享变量的读可见
