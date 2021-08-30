@@ -47,7 +47,6 @@
 - [synchronized原理](docs/Java并发/synchronized原理.md)
 - [synchronized与ReentrantLock对比](docs/Java并发/synchronized与ReentrantLock对比.md)
 - [happens-before](docs/Java并发/happens-before.md)
-- [CPU缓存结构](docs/Java并发/CPU缓存结构.md)
 - [ThreadLocal详解](docs/Java并发/ThreadLocal详解.md)
 
 ## JVM
@@ -150,6 +149,7 @@
 - [死锁](docs/操作系统/死锁.md)
 - [进程、线程、协程](docs/操作系统/进程、线程、协程.md)
 - [Linux内核的IO模型详解](docs/操作系统/Linux内核的IO模型详解.md)
+- [CPU缓存结构](docs/操作系统/CPU缓存结构.md)
 
 # 设计模式
 
