@@ -22,6 +22,10 @@
     - [synchronized与ReentrantLock对比](Java并发/synchronized与ReentrantLock对比.md)
     - [happens-before](Java并发/happens-before.md)
     - [ThreadLocal详解](Java并发/ThreadLocal详解.md)
+    - 并发编程应用
+      - [自定义锁](Java并发/并发编程应用/自定义锁.md)
+      - [同步模式之保护性暂停](Java并发/并发编程应用/同步模式之保护性暂停.md)
+      - [异步模式之生产者消费者](Java并发/并发编程应用/异步模式之生产者消费者.md)
 - JVM
   - [虚拟机和Java虚拟机简介](JVM/虚拟机和Java虚拟机简介.md)
   - [JVM之类加载子系统](JVM/JVM之类加载子系统.md)

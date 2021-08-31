@@ -48,6 +48,10 @@
 - [synchronized与ReentrantLock对比](docs/Java并发/synchronized与ReentrantLock对比.md)
 - [happens-before](docs/Java并发/happens-before.md)
 - [ThreadLocal详解](docs/Java并发/ThreadLocal详解.md)
+- 并发编程应用
+  - [自定义锁](docs/Java并发/并发编程应用/自定义锁.md)
+  - [同步模式之保护性暂停](docs/Java并发/并发编程应用/同步模式之保护性暂停.md)
+  - [异步模式之生产者消费者](docs/Java并发/并发编程应用/异步模式之生产者消费者.md)
 
 ## JVM
 
