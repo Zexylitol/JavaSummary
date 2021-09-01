@@ -169,6 +169,8 @@
       - [kafka术语](框架/kafka/kafka术语.md)
 - 系统设计
   - [接口幂等性讨论](系统设计/接口幂等性讨论.md)
+  - [JavaWeb](系统设计/JavaWeb.md)
+  - [电商系统](系统设计/电商系统.md)
 - 工具
   - [Linux命令](工具/Linux命令.md)
   - [Git命令](工具/Git命令.md)
