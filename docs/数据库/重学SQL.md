@@ -39,7 +39,102 @@ mysql -V
 mysqldump -u用户名 -p密码   --databases 数据库名 > 保存路径
 ```
 
+# 常用
 
+查看隔离级别：
+
+```mysql
+select @@tx_isolation;
+
+show global variables like '%isolation%';
+```
+
+设置隔离级别：
+
+```mysql
+set global transaction_isolation ='read-committed';
+
+-- 设置read uncommitted级别：
+set session transaction isolation level read uncommitted;
+
+-- 设置read committed级别：
+set session transaction isolation level read committed;
+
+-- 设置repeatable read级别：
+set session transaction isolation level repeatable read;
+
+# 设置serializable级别：
+set session transaction isolation level serializable;
+
+# session：当前会话，也就是当前连接。
+
+# global：全局，不包含当前连接，之后新获取的连接都会生效。
+```
+
+设置事务的自动提交模式：
+
+```mysql
+SET autocommit = 0|1|ON|OFF;
+
+BEGIN / START TRANSACTION;
+# ...
+commit;
+
+# 回滚
+rollback;
+```
+
+# 删除数据
+
+常用的三种删除方式： `delete`、`truncate`、`drop`
+
+```mysql
+DELETE from TABLE_NAME where xxx;
+Truncate table TABLE_NAME;
+Drop table Tablename
+```
+
+## 原理
+
+### delete
+
+- `delete`属于数据库DML操作语言，**只删除数据不删除表的结构**，会走事务，执行时会触发trigger
+- 在 InnoDB 中，`delete`其实**并不会真的把数据删除**，mysql 实际上只是给删除的数据打了个标记为已删除，因此 `delete` 删除表中的数据时，表文件在磁盘上所占空间不会变小，存储空间不会被释放，只是把删除的数据行设置为不可见。虽然未释放磁盘空间，但是下次插入数据的时候，仍然可以重用这部分空间（重用 → 覆盖）
+- `delete`执行时，会先将所删除数据缓存到rollback segement中，事务`commit`之后生效
+- `delete from table_name`删除表的全部数据，对于MyISAM会立刻释放磁盘空间，InnoDB 不会释放磁盘空间
+- 对于`delete from table_name where xxx` 带条件的删除, 不管是InnoDB还是MyISAM都不会释放磁盘空间
+- `delete`操作以后使用 `optimize table table_name `会立刻释放磁盘空间。不管是InnoDB还是MyISAM 
+- `delete` 操作是**一行一行执行删除的，并且同时将该行的的删除操作日志记录在redo和undo表空间中以便进行回滚**（`rollback`）和重做操作，生成的大量日志也会占用磁盘空间
+
+### truncate
+
+- 属于数据库DDL定义语言，不走事务，原数据不放到 rollback segment 中，操作不触发 trigger
+- 执行后立即生效，无法找回
+- `truncate table table_name` 立刻释放磁盘空间 ，不管是 InnoDB和MyISAM
+- `truncate`能够快速清空一个表。并且重置`auto_increment`的值
+  - 对于MyISAM，`truncate`会重置`auto_increment`（自增序列）的值为1。而`delete`后表仍然保持`auto_increment`
+  - 对于InnoDB，`truncate`会重置`auto_increment`的值为1。`delete`后表仍然保持`auto_increment`。但是在做`delete`整个表之后重启MySQL的话，则重启后的`auto_increment`会被置为1
+    - 也就是说，InnoDB的表本身是无法持久保存`auto_increment`。`delete`表之后`auto_increment`仍然保存在内存，但是重启后就丢失了，只能从1开始。实质上重启后的auto_increment会从 `SELECT 1+MAX(ai_col) FROM t `开始
+
+### drop
+
+- `drop`是DDL，会隐式提交，所以，不能回滚，不会触发触发器
+- `drop`语句删除表结构及所有数据，并将表所占用的空间全部释放
+- `drop`语句将删除表的结构所依赖的约束，触发器，索引，依赖于该表的存储过程/函数将保留，但是变为invalid状态
+
+## 执行速度
+
+```
+drop > truncate > delete
+```
+
+## 小结
+
+- TRUNCATE 和DELETE只删除数据， DROP则删除整个表（结构和数据）
+- delete语句为DML（data maintain Language),这个操作会被放到 rollback segment中,事务提交后才生效。如果有相应的 tigger,执行的时候将被触发。
+- truncate、drop是DLL（data define language),操作立即生效，原数据不放到 rollback segment中，不能回滚
+- truncate table 在功能上与不带 WHERE 子句的 DELETE 语句相同：二者均删除表中的全部行。但 TRUNCATE TABLE 比 DELETE 速度快，且使用的系统和事务日志资源少。DELETE 语句每次删除一行，并在事务日志中为所删除的每行记录一项。**TRUNCATE TABLE 通过释放存储表数据所用的数据页来删除数据，并且只在事务日志中记录页的释放**
+- **TRUNCATE TABLE 删除表中的所有行，但表结构及其列、约束、索引等保持不变。新行标识所用的计数值重置为该列的种子。如果想保留标识计数值，请改用 DELETE。如果要删除表定义及其数据，请使用 DROP TABLE 语句**
 
 # MySQL的语法规范
 
@@ -1818,4 +1913,5 @@ WHERE 0;
 # Reference
 
 - [零散的MySQL基础知识](https://mp.weixin.qq.com/s/wKIcd2Pq3RAeh7gB4uwinw)
+- [mysql中drop、truncate和delete的区别](https://blog.csdn.net/czh500/article/details/106978028)
 
