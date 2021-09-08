@@ -48,6 +48,7 @@
   - [JVM之MinorGC、MajorGC和FullGC的对比](JVM/JVM之MinorGC、MajorGC和FullGC的对比.md)
   - [G1与CMS的对比](JVM/G1与CMS的对比.md)
   - [Java中几种不同引用](JVM/Java中几种不同引用.md)
+  - [JVM面试题](JVM/JVM面试题.md)
 - 计算机网络
   - [TCP/IP与OSI参考模型](计算机网络/TCP-IP与OSI参考模型.md)
   - [IPv4首部](计算机网络/IPv4首部)
@@ -118,6 +119,7 @@
     - [Redis主从复制](数据库/Redis/Redis主从复制.md)
     - [Redis哨兵机制](数据库/Redis/Redis哨兵机制.md)
     - [Redis面试题](数据库/Redis/Redis面试题.md)
+  - [数据库面试题](数据库/数据库面试题.md)
 - 设计模式
   - [设计模式概述与分类](设计模式/设计模式概述与分类.md)
   - [UML图及类图](设计模式/UML图及类图.md)

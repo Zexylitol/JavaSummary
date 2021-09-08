@@ -76,6 +76,7 @@
 - [JVM之MinorGC、MajorGC和FullGC的对比](docs/JVM/JVM之MinorGC、MajorGC和FullGC的对比.md)
 - [G1与CMS的对比](docs/JVM/G1与CMS的对比.md)
 - [Java中几种不同引用](docs/JVM/Java中几种不同引用.md)
+- [JVM面试题](docs/JVM/JVM面试题.md)
 
 
 
@@ -109,6 +110,7 @@
   - [Redis主从复制](docs/数据库/Redis/Redis主从复制.md)
   - [Redis哨兵机制](docs/数据库/Redis/Redis哨兵机制.md)
   - [Redis面试题](docs/数据库/Redis/Redis面试题.md)
+- [数据库面试题](docs/数据库/数据库面试题.md)
 
 # LeetCode
 
