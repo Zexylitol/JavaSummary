@@ -141,6 +141,7 @@
 - [排序](docs/LeetCode/排序.md)
 - [模拟](docs/LeetCode/模拟.md)
 - [图](docs/LeetCode/图.md)
+- [字典树](docs/LeetCode/字典树.md)
 
 # 计算机网络
 

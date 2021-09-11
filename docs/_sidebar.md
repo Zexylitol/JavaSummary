@@ -90,6 +90,7 @@
   - [排序](LeetCode/排序.md)
   - [模拟](LeetCode/模拟.md)
   - [图](LeetCode/图.md)
+  - [字典树](LeetCode/字典树.md)
 - 数据库
   - [重学SQL](数据库/重学SQL.md)
   - [三大范式](数据库/三大范式.md)
