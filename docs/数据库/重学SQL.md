@@ -84,6 +84,16 @@ commit;
 rollback;
 ```
 
+MySQL默认端口号：`3306`
+
+```mysql
+show global variables like 'port';
+```
+
+修改端口：编辑`/etc/my.cnf`文件
+
+Redis默认端口号：`6379`
+
 # 删除数据
 
 常用的三种删除方式： `delete`、`truncate`、`drop`
@@ -577,18 +587,19 @@ avg 平均值
 count 计数
 ```
 特点：
-1、以上五个分组函数都忽略null值，除了count(*)
-2、sum和avg一般用于处理数值型
-	max、min、count可以处理任何数据类型
-3、都可以搭配distinct使用，用于统计去重后的结果
-4、count的参数可以支持：
-	字段、\*、常量值，一般放1
 
-   建议使用 count(*)
+1、以上五个分组函数都忽略`null`值，除了`count(*)`
+
+2、`sum`和`avg`一般用于处理数值型，`max、min、count`可以处理任何数据类型
+
+3、都可以搭配`distinct`使用，用于统计去重后的结果
+
+4、`count`的参数可以支持：字段、\*、常量值，一般放1，建议使用 `count(*)`
 
 效率：
-MYISAM存储引擎下  ，COUNT(\*)的效率高
-INNODB存储引擎下，COUNT(\*)和COUNT(1)的效率差不多，比COUNT(字段)要高一些
+MYISAM存储引擎下  ，`COUNT(*)`的效率高
+
+INNODB存储引擎下，`COUNT(*)`和`COUNT(1)`的效率差不多，比`COUNT(字段)`要高一些
 
 示例：
 
@@ -612,18 +623,23 @@ from 表
 group by 分组的字段
 ```
 特点：
+
 1、可以按单个字段分组
+
 2、和分组函数一同查询的字段最好是分组后的字段
+
 3、分组筛选
 
-|            |    针对的表    |      位置      | 关键字 |
-| :--------: | :------------: | :------------: | :----: |
-| 分组前筛选 |     原始表     | group by的前面 | where  |
-| 分组后筛选 | 分组后的结果集 | group by的后面 | having |
+|            |    针对的表    |       位置       |  关键字  |
+| :--------: | :------------: | :--------------: | :------: |
+| 分组前筛选 |     原始表     | `group by`的前面 | `where`  |
+| 分组后筛选 | 分组后的结果集 | `group by`的后面 | `having` |
 
 4、可以按多个字段分组，字段之间用逗号隔开
+
 5、可以支持排序
-6、having后可以支持别名
+
+6、`having`后可以支持别名
 
 示例：
 
@@ -634,7 +650,7 @@ FROM employees
 WHERE manager_id IS NOT NULL
 GROUP BY manager_id
 
-#查询各个管理者手下员工的最低工资，其中最低工资不能低于6000，没有管理者的员工不计算在内
+# 查询各个管理者手下员工的最低工资，其中最低工资不能低于6000，没有管理者的员工不计算在内
 SELECT MIN(salary),manager_id
 FROM employees
 WHERE manager_id IS NOT NULL
@@ -648,13 +664,90 @@ GROUP BY department_id
 ORDER BY a DESC;
 ```
 
+**LeetCode 184. 部门工资最高的员工**
+
+`Employee` 表包含所有员工信息，每个员工有其对应的 `Id`, `salary` 和 `department Id`。
+
+> +----+-------+--------+--------------+
+> | Id | Name  | Salary | DepartmentId |
+> +----+-------+--------+--------------+
+> | 1  | Joe   | 70000  | 1            |
+> | 2  | Jim   | 90000  | 1            |
+> | 3  | Henry | 80000  | 2            |
+> | 4  | Sam   | 60000  | 2            |
+> | 5  | Max   | 90000  | 1            |
+> +----+-------+--------+--------------+
+
+`Department` 表包含公司所有部门的信息。
+
+> +----+----------+
+> | Id | Name     |
+> +----+----------+
+> | 1  | IT       |
+> | 2  | Sales    |
+> +----+----------+
+
+编写一个 SQL 查询，找出每个部门工资最高的员工。
+
+> +------------+----------+--------+
+> | Department | Employee | Salary |
+> +------------+----------+--------+
+> | IT         | Max      | 90000  |
+> | IT         | Jim      | 90000  |
+> | Sales      | Henry    | 80000  |
+> +------------+----------+--------+
+
+解释：
+
+Max 和 Jim 在 IT 部门的工资都是最高的，Henry 在销售部的工资最高。
+
+```mysql
+SELECT
+    Department.name AS 'Department',
+    Employee.name AS 'Employee',
+    Salary
+FROM
+    Employee
+        JOIN
+    Department ON Employee.DepartmentId = Department.Id
+WHERE
+    (Employee.DepartmentId , Salary) IN
+    (   SELECT
+            DepartmentId, MAX(Salary)
+        FROM
+            Employee
+        GROUP BY DepartmentId
+	)
+;
+```
+
+**LeetCode 185. 部门工资前三高的所有员工**
+
+```mysql
+SELECT
+	Department.NAME AS Department,
+	e1.NAME AS Employee,
+	e1.Salary AS Salary 
+FROM
+	Employee AS e1,Department 
+WHERE
+	e1.DepartmentId = Department.Id 
+	AND 3 > (SELECT  count( DISTINCT e2.Salary ) 
+			 FROM	Employee AS e2 
+			 WHERE	e1.Salary < e2.Salary 	AND e1.DepartmentId = e2.DepartmentId 	) 
+ORDER BY Department.NAME,Salary DESC;
+```
+
+
+
 ### 1.6 多表连接查询
 
 含义：又称多表查询，当查询的字段来自于多个表时，就会用到连接查询
 
-笛卡尔乘积现象：表1 有m行，表2有n行，结果=m*n行
+笛卡尔乘积现象：表1有m行，表2有n行，结果=m*n行
 
 发生原因：没有有效的连接条件
+
 如何避免：添加有效的连接条件
 
 <table>
@@ -1451,21 +1544,12 @@ limit 【offset,】size;
 # size 要显示的条目个数
 ```
 
-特点：
+`LIMIT`里面不能做运算：
 
-	①limit语句放在查询语句的最后
-	②公式
-	要显示的页数 page，每页的条目数size
-	
-	select 查询列表
-	from 表
-	limit (page-1)*size,size;
-	
-	size=10
-	page  
-	1	0
-	2  	10
-	3	20
+- `limit 2,1`：跳过2条取出1条数据，即读取第3条数据
+
+- `limit 2 offset 1`：跳过2条取出1条数据，即读取第2,3条
+
 示例：
 
 ```mysql
@@ -1483,6 +1567,36 @@ WHERE commission_pct IS NOT NULL
 ORDER BY salary DESC 
 LIMIT 10;
 ```
+
+```mysql
+# 检索记录行 6-15
+SELECT * FROM table LIMIT 5,10;  
+
+# 检索记录行 96-last.
+SELECT * FROM table LIMIT 95,-1; 
+
+# 检索前 5 个记录行 
+# LIMIT n 等价于 LIMIT 0,n
+SELECT * FROM table LIMIT 5;     
+```
+
+子查询的分页方式：
+
+```mysql
+# 随着数据量的增加，页数会越来越多，越往后分页，LIMIT语句的偏移量就会越大，速度也会明显变慢
+select * from articles where category_id=123 order by id limit 10000, 10;
+
+# 通过子查询的方式来提高分页效率
+select * from articles 
+where id >= (
+	select id from articles where category_id=123 order by id limit 10000,1
+) 
+limit 10;
+```
+
+
+
+
 
 ### 1.9 联合查询
 
