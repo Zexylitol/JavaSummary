@@ -1012,8 +1012,13 @@ Java 8中`ConcurrentHashMap`底层数据结构采用数组(table)+链表(Node)|�
 - 扩容：扩容是以 bin 为单位进行，需要对 bin 使用 `synchronized` 加锁，但这时其他竞争线程也不是无事可做，它们会帮助把其他 bin 进行扩容，扩容时平均只有 1/6 的节点会被复制到新 table 中
 - size：元素个数保存在 baseCount 中，并发时的个数变动保存在 CounterCell[] 当中，最后统计数量时累加即可
 
+# 为什么要使用synchronized取代ReentrantLock?
+
+- 减少内存开销：如果使用`ReentrantLock`则需要节点继承AQS来获得同步支持，增加内存开销，而1.8只有头节点需要进行同步
+- 内部优化：`synchronized`则是JVM直接支持的，JVM能够在运行时作出相应的优化措施：锁粗化、锁消除、锁自旋等，减少线程挂起和唤醒这个上下文切换的过程开销
+
 # Reference
 
 - [黑马程序员](https://www.bilibili.com/video/BV16J411h7Rd?p=281)
-
 - [基于JDK 1.6 ConcurrentHashMap](https://blog.csdn.net/justloveyou_/article/details/72783008)
+- [为什么使用CAS+synchronized取代Segment+ReentrantLock?](https://www.cnblogs.com/shihaiming/p/11399472.html)

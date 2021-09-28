@@ -41,7 +41,7 @@ mysqldump -u用户名 -p密码   --databases 数据库名 > 保存路径
 
 # 常用
 
-查看隔离级别：
+## 查看隔离级别
 
 ```mysql
 select @@tx_isolation;
@@ -49,9 +49,11 @@ select @@tx_isolation;
 show global variables like '%isolation%';
 ```
 
-设置隔离级别：
+## 设置隔离级别
 
 ```mysql
+set @@tx_isolation='read-ncommitted';
+
 set global transaction_isolation ='read-committed';
 
 -- 设置read uncommitted级别：
@@ -71,7 +73,7 @@ set session transaction isolation level serializable;
 # global：全局，不包含当前连接，之后新获取的连接都会生效。
 ```
 
-设置事务的自动提交模式：
+## 设置事务的自动提交模式
 
 ```mysql
 SET autocommit = 0|1|ON|OFF;
@@ -84,6 +86,8 @@ commit;
 rollback;
 ```
 
+## 查看端口号
+
 MySQL默认端口号：`3306`
 
 ```mysql
@@ -93,6 +97,14 @@ show global variables like 'port';
 修改端口：编辑`/etc/my.cnf`文件
 
 Redis默认端口号：`6379`
+
+## 查看当前锁请求信息
+
+```mysql
+show engine innodb status;
+```
+
+
 
 # 删除数据
 

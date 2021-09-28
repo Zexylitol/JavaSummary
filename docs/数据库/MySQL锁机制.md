@@ -4,7 +4,7 @@
 
 # 一、什么是锁
 
-<span style="color:blue">锁是用于管理对共享资源的并发访问</span>，是数据库系统区别于文件系统的一个关键特性
+<span style="color:blue">锁是用于管理对共享资源的并发访问</span>，提供数据的完整性和一致性。
 
 # 二、锁的类型
 
@@ -28,57 +28,182 @@ MySQL不同的存储引擎支持的锁粒度是不同的：
 
 ## 2.2 意向锁
 
-上节提到InnoDB 支持多种粒度的锁，也就是行锁和表锁。为了支持多粒度锁定，InnoDB 存储引擎引入了意向锁（Intention Lock）。
+InnoDB存储引擎支持多粒度（granular）锁定，这种锁定允许事务在行级上的锁和表级上的锁同时存在。为了支持在不同粒度上进行加锁操作，InnoDB存储引擎支持一种额外的锁方式，称之为**意向锁(Intention Lock)**。意向锁是将锁定的对象分为多个层次，意向锁意味着事务希望在更细粒度（fine granularity)上进行加锁。
+
+InnoDB存储引擎支持意向锁设计比较简练，**其意向锁即为表级别的锁**。设计目的主要是为了在一个事务中揭示下一行将被请求的锁类型。其支持两种意向锁：
+
+- <span style="color:red">意向共享锁（IS Lock)，事务想要获得一张表中某几行的共享锁</span>
+- <span style="color:red">意向排他锁（IX Lock)，事务想要获得一张表中某几行的排他锁</span>
+
+<span style="color:blue">由于InnoDB存储引擎支持的是行级别的锁，因此意向锁其实不会阻塞除全表扫以外的任何请求</span>。
 
 那什么是意向锁呢？在这里可以举一个例子：**如果没有意向锁，当已经有人使用行锁对表中的某一行进行修改时，如果另外一个请求要对全表进行修改，那么就需要对所有的行是否被锁定进行扫描，在这种情况下，效率是非常低的；不过，<span style="color:red">在引入意向锁之后，当有人使用行锁对表中的某一行进行修改之前，会先为表添加意向排他锁（IX），再为行记录添加排他锁（X），在这时如果有人尝试对全表进行修改就不需要判断表中的每一行数据是否被加锁了，只需要通过等待意向排他锁被释放就可以了</span>。**
 
 ## 2.3 锁的兼容性
 
-对数据的操作其实只有两种，也就是读和写，而数据库在实现锁时，也会对这两种操作使用不同的锁；InnoDB 实现了标准的行级锁，也就是共享锁（Shared Lock）和排他锁（Exclusive Lock）。
+对数据的操作其实只有两种，也就是读和写，而数据库在实现锁时，也会对这两种操作使用不同的锁；**InnoDB 实现了标准的行级锁，也就是共享锁（Shared Lock）和排他锁（Exclusive Lock）**。
 
-- 共享锁（读锁、S锁），允许事务读一行数据。
-- 排他锁（写锁、X锁），允许事务删除或更新一行数据。
+- <span style="color:red">共享锁（读锁、S锁、S Lock），允许事务读一行数据</span>
+- <span style="color:red">排他锁（写锁、X锁、X Lock），允许事务删除或更新一行数据</span>
 
-而它们的名字也暗示着各自的另外一个特性，共享锁之间是兼容的，而排他锁与其他任意锁都不兼容：
+而它们的名字也暗示着各自的另外一个特性，**共享锁之间是兼容的，而排他锁与其他任意锁都不兼容**
+
+> 如果一个事务T1已经获得了行r的共享锁，那么另外的事务T2可以立即获得行r的共享锁，因为读取并没有改变行r的数据，称这种情况为**锁兼容（Lock Compatible)**。但**若有其他的事务T3**想获得行r的排他锁，则其必须等待事务T1、T2释放行r上的共享锁——这种情况称为**锁不兼容**
 
 <center><img src="https://ss.im5i.com/2021/08/14/Vl7T7.png" alt="Vl7T7.png" border="0" /></center>
 
+> S和X锁都是行锁，兼容是指对同一记录(row)锁的兼容性情况
+
 ## 2.4 行锁的算法
 
-1. Record Lock：行锁，单个行记录上的锁。
+InnoDB存储引擎有3种行锁的算法，其分别是：
 
-2. Gap Lock：间隙锁，锁定一个范围，但不包括记录本身。GAP锁的目的，是为了防止幻读、防止间隙内有新数据插入、防止已存在的数据更新为间隙内的数据。
+1. **Record Lock**：行锁，单个行记录上的锁。
+
+2. **Gap Lock**：间隙锁，锁定一个范围，但不包括记录本身。GAP锁的目的，是为了防止幻读、防止间隙内有新数据插入、防止已存在的数据更新为间隙内的数据。
 
    > （前提：RR隔离级别）检索到的数据是一个范围时（非唯一索引列或范围条件而不是相等条件检索数据），并请求共享或排他锁时，InnoDB会加间隙锁
+   >
+   > 
+   >
+   > 用户可以通过以下两种方式来显式地关闭Gap Lock：
+   >
+   > - 将事务的隔离级别设置为READ COMMITTED
+   >
+   > - 将参数innodb_locks_unsafe_for_binlog 设置为1
+   >
+   > 在上述的配置下，除了外键约束和唯一性检查依然需要的Gap Lock，其余情况仅使用Record Lock进行锁定。但需要牢记的是，上述设置破坏了事务的隔离性，并且对于replication，可能会导致主从数据的不一致。此外，从性能上来看，READ COMMITTED也不会优于默认的事务隔离级别READ REPEATABLE。
 
-3. Next-Key Lock：1+2，锁定一个范围，并且锁定记录本身。对于行的查询，都是采用该方法，主要目的是解决幻读的问题。InnoDB默认加锁方式是next-key 锁。
+   
+
+3. **Next-Key Lock**：Gap Lock + Record Lock，锁定一个范围，并且锁定记录本身。对于行的查询，都是采用该方法，主要目的是解决幻读的问题。InnoDB默认加锁方式是next-key 锁。
+
+> 当查询的索引含有**唯一属性**时，InnoDB存储引擎会对Next-Key Lock进行优化，将其降级为Record Lock，即仅锁住索引本身，而不是范围，从而提高应用的并发性。
+>
+> 若唯一索引由多个列组成，而查询仅是查找多个唯一索引列中的其中一个，那么查询其实是range类型查询，而不是point类型查询，故InnoDB存储引擎依然使用Next-Key Lock进行锁定。
+>
+> Next-Key Lock降级为Record Lock仅在查询的列是唯一索引的情况下。若是辅助索引，则情况会完全不同。首先根据如下代码创建测试表z：
+>
+> ```mysql
+> CREATE TABLE z (
+> 	a INT,
+>     b INT,
+>     PRIMARY KEY(a), KEY(b)
+> );
+> INSERT INTO z SELECT 1,1;
+> INSERT INTO z SELECT 3,1;
+> INSERT INTO z SELECT 5,3;
+> INSERT INTO z SELECT 7,6;
+> INSERT INTO z SELECT 10,8;
+> ```
+>
+> 表z的列b是辅助索引，若在会话A中执行下面的SQL语句：
+>
+> ```mysql
+> SELECT * FROM z WHERE b=3 FOR UPDATE;
+> ```
+>
+> 很明显，这时SQL语句通过索引列b进行查询，因此其使用传统的Next-KeyLocking技术加锁，并且**由于有两个索引，其需要分别进行锁定**。**对于聚集索引，其仅对列a等于5的索引加上Record Lock。而对于辅助索引，其加上的是Next-Key Lock，锁定的范围是(1，3)，特别需要注意的是，InnoDB存储引擎还会对辅助索引下一个键值加上gap lock，即还有一个辅助索引范围为(3，6)的锁**。因此，若在新会话B中运行下面的SQL语句，都会被阻塞：
+>
+> ```mysql
+> SELECT * FROM z WHERE a=5 LOCK IN SHARE MODE;
+> INSERT INTO z SELECT 4,2;
+> INSERT INTO z SELECT 6,5;
+> ```
+>
+> 第一个SQL语句不能执行，因为在会话A中执行的SQL语句已经对聚集索引中列a =5的值加上X锁，因此执行会被阻塞。第二个SQL语句，主键插人4，没有问题，但是插人的辅助索引值2在锁定的范围(1，3)中，因此执行同样会被阻塞。第三个SQL语句，插人的主键6没有被锁定，5也不在范围(1，3)之间。但插人的值5在另一个锁定的范围(3，6)中，故同样需要等待。而下面的SQL语句，不会被阻塞，可以立即执行:
+>
+> ```mysql
+> INSERT INTO z SELECT 8,6;
+> INSERT INTO z SELECT 2,0;
+> INSERT INTO z SELECT 6,7;
+> ```
+>
+> 
 
 ## 2.5 自增锁
 
+在InnoDB存储引擎的内存结构中，对每个含有自增长值的表都有一个自增长计数器（auto-increment counter)。当对含有自增长的计数器的表进行插人操作时，这个计数器会被初始化，执行如下的语句来得到计数器的值：
+
+```mysql
+SELECT MAX(auto_inc_col) FROM t FOR UPDATE;
+```
+
+插入操作会依据这个自增长的计数器值加1赋予自增长列。这个实现方式称做AUTO-INC Locking。**这种锁其实是采用一种特殊的表锁机制，为了提高插入的性能，锁不是在一个事务完成后才释放，而是在完成对自增长值插入的SQL语句后立即释放**。
+
 InnoDB存储引擎中，除了表锁、行锁外，还有一种特殊的锁是自增锁。<span style="color:blue">当表的主键为自增列时，多个并发事务通过自增锁来保证自增主键不会出现重复等现象</span>。
+
+从MySQL 5.1.22版本开始，InnoDB存储引擎中提供了一种轻量级互斥量的自增长实现机制，这种机制大大提高了自增长值插入的性能。并且从该版本开始，InnoDB存储引擎提供了一个参数`innodb_autoinc_lock_mode`来控制自增长的模式，该参数的默认值为1.
 
 首先对自增长的`insert`语句分类：
 
 | 插入类型       | 说明                                                         |
 | :------------- | :----------------------------------------------------------- |
-| simple inserts | 插入前就能确定行数的语句。例如insert、replace（不包括insert .. on duplicate key update) |
-| bulk inserts   | 插入前无法确定行数的语句。例如insert ... select, replace .. select ,load data |
-| mixed inserts  | 插入语句中，一部分是自增长的，一部分是确定的。如insert into t1(c1,c2) values(1,'a'),(NULL,'b'); |
-| insert-like    | 所有的插入语句，如insert，replace，insert .. select等        |
+| simple inserts | 插入前就能确定行数的语句。例如`insert`、`replace`（不包括`insert .. on duplicate key update`) |
+| bulk inserts   | 插入前无法确定行数的语句。例如`insert ... select`, `replace .. select` ,`load data` |
+| mixed inserts  | 插入语句中，一部分是自增长的，一部分是确定的。如`insert into t1(c1,c2) values(1,'a'),(NULL,'b');` |
+| insert-like    | 所有的插入语句，如`insert`，`replace`，`insert .. select`等  |
 
  MySQL中通过参数**innodb_autoinc_lock_mode**控制自增锁的行为，其可选值为0、1、2：
 
 | **innodb_autoinc_lock_mode** | 说明                                                         |
-| :--------------------------- | :----------------------------------------------------------- |
-| 0                            | 此时自增锁是表锁级别的，并发度最低。insert-like语句都需要加锁，在SQL执行完成或者回滚后才会释放（不是在事务完成后），这种情况下对自增锁的并发竞争是比较大的 |
-| 1                            | 此种情况下，并发度居中。对simple inserts语句做了优化，在获取到锁后，立即释放，不必再等待SQL执行完成。而对于bulk inserts语句仍然使用表级别的锁，等待SQL执行完后释放。 |
-| 2                            | 此种情况下，并发度最高。insert-like语句不会使用表级别的自增锁，而是通过互斥量产生。多条语句可同时执行。但是在binlog日志为基于语句格式场景下，会出现主从不一致的现象。 |
+| :--------------------------: | :----------------------------------------------------------- |
+|              0               | **此时自增锁是表锁级别的，并发度最低**。insert-like语句都需要加锁，在SQL执行完成或者回滚后才会释放（不是在事务完成后），这种情况下对自增锁的并发竞争是比较大的 |
+|              1               | 此种情况下，并发度居中。对simple inserts语句做了优化，在获取到锁后，立即释放，不必再等待SQL执行完成。而对于bulk inserts语句仍然使用表级别的锁，等待SQL执行完后释放。 |
+|              2               | 此种情况下，并发度最高。insert-like语句不会使用表级别的自增锁，而是通过互斥量产生。多条语句可同时执行。但是在binlog日志为基于语句格式场景下，会出现主从不一致的现象。 |
+
+<center><img src="https://ss.im5i.com/2021/09/27/lurJn.png" alt="lurJn.png" border="0" /></center>
+
+## 2.6 查看锁信息
+
+查看锁请求信息：
+
+```mysql
+show engine innodb status;
+```
+
+从InnoDB1.0开始，在`INFORMATION_SCHEMA`架构下添加了表`INNODB_TRX`、`INNODB_LOCKS`、`INNODB_LOCK_WAITS`。通过这三张表，用户可以更简单地监控当前事务并分析可能存在的锁问题。
+
+```mysql
+SELECT * FROM information_schema.INNODB_TRX\G;
+SELECT * FROM information_schema.INNODB_LOCKS\G;
+SELECT * FROM information_schema.INNODB_LOCK_WAITS\G;
+```
+
+
+
+<center><img src="https://ss.im5i.com/2021/09/27/lugW8.png" alt="lugW8.png" border="0" /></center>
+
+`INNODB_TRX`只是**显示了当前运行的InnoDB事务**，并不能直接判断锁的一些情况，如需**查看锁**，还需要访问表`INNODB_LOCKS`.
+
+<center><img src="https://ss.im5i.com/2021/09/27/luG0U.png" alt="luG0U.png" border="0" /></center>
+
+在通过表`INNODB_LOCKS`查看了每张表上锁的情况后，用户就可以来判断由此引发的等待情况了。当事务较小时，用户就可以人为地、直观地进行判断了。但是当事务量非常大，其中锁和等待也时常发生，这个时候就不这么容易判断。但是通过表`INNODB_LOCK_WAITS`，可以**很直观地反映当前事务的等待**。
+
+<center><img src="https://ss.im5i.com/2021/09/27/ludxJ.png" alt="ludxJ.png" border="0" /></center>
 
  # 三、加锁分析
 
 在了解如何加锁之前，需要了解一些前提知识：
 
-## **3.1 MVCC：快照读和当前读**
+## 3.1 一致性非锁定读：快照读
+
+一致性的非锁定读(consistent nonlocking read）是指InnoDB存储引擎通过行多版本控制( multi versioning）的方式来读取当前执行时间数据库中行的数据。**如果读取的行正在执行DELETE或UPDATE操作，这时读取操作不会因此去等待行上锁的释放。相反地，InnoDB存储引擎会去读取行的一个快照数据**。
+
+**非锁定读机制极大地提高了数据库的并发性**。在InnoDB存储引擎的默认设置下，这是默认的读取方式，即读取不会占用和等待表上的锁。但是在不同事务隔离级别下，读取的方式不同，并不是在每个事务隔离级别下都是采用非锁定的一致性读。此外，**即使都是使用非锁定的一致性读，但是对于快照数据的定义也各不相同**。
+
+一个行记录可能有不止一个快照数据，一般称这种技术为行多版本技术。由此带来的并发控制，称之为<span style="color:red">多版本并发控制(Multi Version Concurrency Control，MVCC)</span>。
+
+在事务隔离级别`READ COMMITTED`和`REPEATABLE READ` (InnoDB存储引擎的默认事务隔离级别)下，<span style="color:green">InnoDB存储引擎使用非锁定的一致性读。然而，对于快照数据的定义却不相同</span>。在`READ COMMITTED`事务隔离级别下，对于快照数据，**非一致性读总是读取被锁定行的最新一份快照数据**。而在`REPEATABLE READ`事务隔离级别下，对于快照数据，**非一致性读总是读取事务开始时的行数据版本**。
+
+## 3.2 一致性锁定读：当前读
+
+在默认配置下，即事务的隔离级别为`REPEATABLE READ`模式下，InnoDB存储引擎的`SELECT`操作使用一致性非锁定读。但是在某些情况下，用户需要显式地对数据库读取操作进行加锁以保证数据逻辑的一致性。而这要求数据库支持加锁语句，即使是对于`SELECT`的只读操作。InnoDB存储引擎对于`SELECT`语句支持两种一致性的锁定读（locking read）操作：
+
+- <span style="color:red">SELECT...FOR UPDATE</span>：对读取的行记录加一个`X`锁，其他事务不能对已锁定的行加上任何锁
+- <span style="color:red">SELECT...LOCK IN SHARE MODE</span>：对读取的行记录加一个`S`锁，其他事务可以向被锁定的行加`S`锁，但是如果加`X`锁，则会被阻塞
+
+## **3.3 MVCC：快照读和当前读**
 
 MySQL InnoDB存储引擎，实现的是基于多版本的并发控制协议——MVCC ([Multi-Version Concurrency Control](http://en.wikipedia.org/wiki/Multiversion_concurrency_control)) (注：与MVCC相对的，是基于锁的并发控制，Lock-Based Concurrency Control)。<span style="color:red">MVCC最大的好处：读不加锁，读写不冲突</span>。在读多写少的应用中，读写不冲突是非常重要的，极大的增加了系统的并发性能，这也是为什么现阶段，几乎所有的RDBMS，都支持了MVCC。
 
@@ -100,7 +225,7 @@ MySQL InnoDB存储引擎，实现的是基于多版本的并发控制协议—�
 
 <span style="color:blue">在RR级别下，快照读是通过MVCC(多版本控制)和undo log来实现的，当前读是通过加record lock(记录锁)和gap lock(间隙锁)来实现的</span>。
 
-## **3.2 两阶段锁**
+## **3.4 两阶段锁**
 
 传统RDBMS加锁的一个原则，就是2PL (二阶段锁)：[Two-Phase Locking](http://en.wikipedia.org/wiki/Two-phase_locking)。相对而言，2PL比较容易理解，说的是**锁操作分为两个阶段：加锁阶段与解锁阶段，并且保证加锁阶段与解锁阶段不相交**。下面，仍旧以MySQL为例，来简单看看2PL在MySQL中的实现。
 
@@ -108,11 +233,11 @@ MySQL InnoDB存储引擎，实现的是基于多版本的并发控制协议—�
 
 从上图可以看出，<span style="color:blue">2PL就是将加锁/解锁分为两个完全不相交的阶段。加锁阶段：只加锁，不放锁。解锁阶段：只放锁，不加锁</span>。
 
-## 3.3 隔离级别
+## 3.5 隔离级别
 
 通过锁定机制可以实现事务隔离性要求，使得事务可以并发的工作。锁提高了并发，但是却会带来潜在的问题。不过好在有事务隔离性的要求，不同的隔离级别解决的锁的问题也不同
 
-### 3.3.1 SQL标准中的四种隔离级别
+### 3.5.1 SQL标准中的四种隔离级别
 
 `SQL标准`中设立了4个`隔离级别`：
 
@@ -143,7 +268,7 @@ MySQL InnoDB存储引擎，实现的是基于多版本的并发控制协议—�
 
 - `SERIALIZABLE`隔离级别下，各种问题都不可以发生
 
-### 3.3.2 MySQL中支持的四种隔离级别
+### 3.5.2 MySQL中支持的四种隔离级别
 
 不同的数据库厂商对`SQL标准`中规定的四种隔离级别支持不一样，比方说`Oracle`就只支持`READ COMMITTED`和`SERIALIZABLE`隔离级别。MySQL虽然支持4种隔离级别，但与`SQL标准`中所规定的各级隔离级别允许发生的问题却有些出入，<span style="color:red">MySQL在REPEATABLE READ隔离级别下，是可以禁止幻读问题的发生的</span>。
 
@@ -169,7 +294,7 @@ Serializable隔离级别下，读写冲突，因此并发度急剧下降，在My
 
 
 
-## **3.4 加锁分析**
+## **3.6 加锁分析**
 
 在介绍完一些背景知识之后，本文接下来将选择几个有代表性的例子，来详细分析MySQL的加锁处理。当然，还是从最简单的例子说起。我们经常遇到的问题是，给定一个SQL，这个SQL加什么锁？就如同下面两条简单的SQL，他们加什么锁？
 
@@ -212,7 +337,7 @@ Serializable隔离级别下，读写冲突，因此并发度急剧下降，在My
 
 注：在前面八种组合下，也就是RC，RR隔离级别下，**SQL1：select操作均不加锁，采用的是快照读**，因此在下面的讨论中就忽略了，主要讨论SQL2：delete操作的加锁。
 
-### **3.4.1 id主键+RC**
+### **3.6.1 id主键+RC**
 
 这个组合，是最简单，最容易分析的组合。id是主键，Read Committed隔离级别，给定SQL：`delete from t1 where id = 10;` 只需要将主键上，id = 10的记录加上X锁即可。如下图所示：
 
@@ -220,7 +345,7 @@ Serializable隔离级别下，读写冲突，因此并发度急剧下降，在My
 
 **结论：**id是主键时，此SQL只需要在id=10这条记录上加X锁即可。
 
-### **3.4.2 id唯一索引+RC**
+### **3.6.2 id唯一索引+RC**
 
 这个组合，id不是主键，而是一个Unique的二级索引键值。那么在RC隔离级别下，`delete from t1 where id = 10;` 需要加什么锁呢？见下图：
 
@@ -230,7 +355,7 @@ Serializable隔离级别下，读写冲突，因此并发度急剧下降，在My
 
 **结论**：若id列是unique列，其上有unique索引。那么SQL需要加两个X锁，一个对应于id unique索引上的id = 10的记录，另一把锁对应于聚簇索引上的[name=’d’,id=10]的记录。
 
-### **3.4.3 id非唯一索引+RC**
+### **3.6.3 id非唯一索引+RC**
 
 相对于组合一、二，组合三又发生了变化，隔离级别仍旧是RC不变，但是id列上的约束又降低了，id列不再唯一，只有一个普通的索引。假设`delete from t1 where id = 10;` 语句，仍旧选择id列上的索引进行过滤where条件，那么此时会持有哪些锁？同样见下图：
 
@@ -240,7 +365,7 @@ Serializable隔离级别下，读写冲突，因此并发度急剧下降，在My
 
 **结论**：若id列上有非唯一索引，那么对应的所有满足SQL查询条件的记录，都会被加锁。同时，这些记录在主键索引上的记录，也会被加锁。
 
-### **3.4.4 id无索引+RC**
+### **3.6.4 id无索引+RC**
 
 相对于前面三个组合，这是一个比较特殊的情况。id列上没有索引，where id = 10;这个过滤条件，没法通过索引进行过滤，那么只能走全表扫描做过滤。对应于这个组合，SQL会加什么锁？或者是换句话说，全表扫描时，会加什么锁？这个答案也有很多：有人说会在表上加X锁；有人说会将聚簇索引上，选择出来的id = 10;的记录加上X锁。那么实际情况呢？请看下图：
 
@@ -254,17 +379,17 @@ Serializable隔离级别下，读写冲突，因此并发度急剧下降，在My
 
 **结论：**若id列上没有索引，SQL会走聚簇索引的全扫描进行过滤，由于过滤是由MySQL Server层面进行的。因此每条记录，无论是否满足条件，都会被加上X锁。但是，为了效率考量，MySQL做了优化，对于不满足条件的记录，会在判断后放锁，最终持有的，是满足条件的记录上的锁，但是不满足条件的记录上的加锁/放锁动作不会省略。同时，优化也违背了2PL的约束。
 
-### **3.4.5 id主键+RR**
+### **3.6.5 id主键+RR**
 
 上面的四个组合，都是在Read Committed隔离级别下的加锁行为，接下来的四个组合，是在Repeatable Read隔离级别下的加锁行为。
 
 组合五，id列是主键列，Repeatable Read隔离级别，针对`delete from t1 where id = 10;` 这条SQL，加锁与组合一：[id主键，Read Committed]一致。
 
-### 3.4.6 id唯一索引+RR
+### 3.6.6 id唯一索引+RR
 
 与组合五类似，组合六的加锁，与组合二：[id唯一索引，Read Committed]一致。两个X锁，id唯一索引满足条件的记录上一个，对应的聚簇索引上的记录一个。
 
-### **3.4.7 id非唯一索引+RR**
+### **3.6.7 id非唯一索引+RR**
 
 RC隔离级别允许幻读，而RR隔离级别，解决了一部分幻读。但是在组合五、组合六中，加锁行为又是与RC下的加锁行为完全一致。那么RR隔离级别下，如何解决幻读呢？问题的答案，就在组合七中揭晓。
 
@@ -288,7 +413,7 @@ RC隔离级别允许幻读，而RR隔离级别，解决了一部分幻读。但�
 
 **结论：**Repeatable Read隔离级别下，id列上有一个非唯一索引，对应SQL：`delete from t1 where id = 10;` 首先，通过id索引定位到第一条满足查询条件的记录，加记录上的X锁，加GAP上的GAP锁，然后加主键聚簇索引上的记录X锁，然后返回；然后读取下一条，重复进行。直至进行到第一条不满足条件的记录[11,f]，此时，不需要加记录X锁，但是仍旧需要加GAP锁，最后返回结束。
 
-### **3.4.8 id无索引+RR**
+### **3.6.8 id无索引+RR**
 
 组合八，Repeatable Read隔离级别下的最后一种情况，id列上没有索引。此时SQL：`delete from t1 where id = 10;` 没有其他的路径可以选择，只能进行全表扫描。最终的加锁情况，如下图所示：
 
@@ -302,7 +427,7 @@ RC隔离级别允许幻读，而RR隔离级别，解决了一部分幻读。但�
 
 **结论：**在Repeatable Read隔离级别下，如果进行全表扫描的当前读，那么会锁上表中的所有记录，同时会锁上聚簇索引内的所有GAP，杜绝所有的并发 更新/删除/插入 操作。当然，也可以通过触发semi-consistent read，来缓解加锁开销与并发影响，但是semi-consistent read本身也会带来其他问题，不建议使用。
 
-### **3.4.9 Serializable**
+### **3.6.9 Serializable**
 
 针对前面提到的简单的SQL，最后一个情况：Serializable隔离级别。对于SQL2：`delete from t1 where id = 10;` 来说，Serializable隔离级别与Repeatable Read隔离级别完全一致，因此不做介绍。
 
@@ -310,7 +435,7 @@ Serializable隔离级别，影响的是SQL1：`select * from t1 where id = 10;` 
 
 **结论：**<span style="color:green">在MySQL/InnoDB中，所谓的读不加锁，并不适用于所有的情况，而是隔离级别相关的。Serializable隔离级别，读不加锁就不再成立，所有的读操作，都是当前读</span>。
 
-## 3.5 样例
+## 3.7 样例
 
 写到这里，其实MySQL的加锁实现也已经介绍的八八九九。只要将本文上面的分析思路，大部分的SQL，都能分析出其会加哪些锁。而这里，再来看一个稍微复杂点的SQL，用于说明MySQL加锁的另外一个逻辑。SQL用例如下：
 
@@ -339,6 +464,10 @@ Serializable隔离级别，影响的是SQL1：`select * from t1 where id = 10;` 
 
 - 可以根据MySQL的加锁规则，写出不会发生死锁的SQL；
 - 可以根据MySQL的加锁规则，定位出线上产生死锁的原因；
+
+**死锁是指两个或两个以上的事务在执行过程中，因争夺锁资源而造成的一种互相等待的现象。若无外力作用，事务都将无法推进下去。**
+
+> InnoDB存储引擎并不会回滚大部分的错误异常，但是死锁除外。发现死锁后，InnoDB存储引擎会马上回滚一个事务，这点是需要注意的。因此如果在应用程序中捕获了1213这个错误，其实并不需要对其进行回滚。
 
 ## 4.1 死锁原因分析
 
