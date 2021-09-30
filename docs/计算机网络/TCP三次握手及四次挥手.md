@@ -176,13 +176,24 @@ TIME-WAIT通常**是 2 个 `MSL`(`Maximum Segment Lifetime，报文最大生存�
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210424212820651.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3h5bGl0b2x6,size_16,color_FFFFFF,t_70#pic_center)
 
+# 4. TCP三次握手时，IP层和MAC层在做什么呢？
+
+**当然是TCP发送的每一个消息，都会带着IP层和MAC层了**。因为，TCP每发送一个消息，IP层和MAC层的所有机制都要运行一遍。你只看到TCP三次握手了，其实，IP层和MAC层为此也忙活好久了。
+
+> <span style="color:red">只要是在网络上跑的包，都是完整的，可以由下层没上层，绝对不可能有上层没下层</span>
+
+所以，对TCP协议来说，三次握手也好，重试也好，只要想发出去包，就要有IP层和MAC层，不然是发不出去的。
+
+经常有人会问这样一个问题，我都知道那台机器的IP地址了，直接发给他消息呗，要MAC地址干啥？这里的关键就是，**没有MAC地址消息是发不出去的。**
+
+所以如果一个HTTP协议的包跑在网络上，它一定是完整的。无论这个包经过哪些设备，它都是完整的。
+
+**所谓的二层设备、三层设备，都是这些设备上跑的程序不同而已**。一个HTTP协议的包经过一个二层设备，二层设备收进去的是整个网络包。这里面HTTP、TCP、IP、MAC都有。什么叫二层设备呀，就是只把 MAC头摘下来，看看到底是丢弃、转发，还是自己留着。那什么叫三层设备呢?就是把 MAC头摘下来之后，再把IP头摘下来，看看到底是丢弃、转发，还是自己留着。
 
 # Reference
 
 - [TCP协议面试10连问](https://mp.weixin.qq.com/s/_NDcAZLCL0vvjzu4Sv41Hg)
-
 - [TCP为什么是三次握手-车小胖](https://www.zhihu.com/question/24853633)
-
 - [TCP三次握手详解](https://blog.csdn.net/jun2016425/article/details/81506353)
-
 - [TCP同时断开](http://www.tcpipguide.com/free/t_TCPConnectionTermination-4.htm)
+- [趣谈网络协议](https://time.geekbang.org/column/intro/85)
