@@ -144,6 +144,7 @@
 - [模拟](docs/LeetCode/模拟.md)
 - [图](docs/LeetCode/图.md)
 - [字典树](docs/LeetCode/字典树.md)
+- [哈希表](docs/LeetCode/哈希表.md)
 
 # 计算机网络
 
