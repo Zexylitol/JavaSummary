@@ -8,11 +8,14 @@
 # 2. HTTP和HTTPS的区别
 
 - HTTPS正是为了解决HTTP的不足
+
 - HTTPS并非是应用层的一种新协议，只是HTTP**通信接口部分**用SSL(Secure Socket Layer，安全套接层)和TLS(Transport Layer Security, 安全传输层协议)协议代替而已
+
 - 通常，**HTTP直接和TCP通信。当使用SSL时，则演变成先和SSL通信，再由SSL和TCP通信**，简而言之，所谓HTTPS，就是身披SSL外壳的HTTP
+
 - 在采用SSL后，HTTP就拥有了HTTPS的**加密、证书和完整性保护**这些功能
 
-<center><img src="https://i.loli.net/2021/03/30/28S4vMcAzCnNjqg.png"/></center>
+  <center><img src="HTTPS.assets/28S4vMcAzCnNjqg.png"/></center>
 
 ## 2.1 SSL和TLS
 
@@ -37,10 +40,9 @@
 
 # 3. HTTPS密钥交换过程
 
-<center><img src="https://i.loli.net/2021/04/09/EWykdA5nF8RVQMr.png"/></center>
+<center><img src="HTTPS.assets/EWykdA5nF8RVQMr.png"/></center>
 
 - HTTPS采用**共享秘钥加密**（对称秘钥）和**公开秘钥加密**（非对称秘钥）两者并用的混合加密机制。在**交换秘钥环节**使用公开秘钥加密方式，之后的**建立通信交换报文**阶段则使用共享秘钥加密方式
-
 - 可信赖的第三方数字证书认证机构的业务流程：
   - 首先，服务器的运营人员向数字证书认证机构提出公开秘钥的申请
   - 数字证书认证机构在判明提出申请者的身份之后，对已申请的公开秘钥做数字签名
