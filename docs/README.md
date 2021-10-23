@@ -139,6 +139,7 @@
 - [模拟](LeetCode/模拟.md)
 - [图](LeetCode/图.md)
 - [字典树](LeetCode/字典树.md)
+- [哈希表](LeetCode/哈希表.md)
 
 # 计算机网络
 
