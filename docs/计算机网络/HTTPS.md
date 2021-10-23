@@ -15,7 +15,8 @@
 
 - 在采用SSL后，HTTP就拥有了HTTPS的**加密、证书和完整性保护**这些功能
 
-  <center><img src="HTTPS.assets/28S4vMcAzCnNjqg.png"/></center>
+
+![图片](HTTPS.assets/639.png)
 
 ## 2.1 SSL和TLS
 
@@ -40,7 +41,7 @@
 
 # 3. HTTPS密钥交换过程
 
-<center><img src="HTTPS.assets/EWykdA5nF8RVQMr.png"/></center>
+![图片](HTTPS.assets/641.png)
 
 - HTTPS采用**共享秘钥加密**（对称秘钥）和**公开秘钥加密**（非对称秘钥）两者并用的混合加密机制。在**交换秘钥环节**使用公开秘钥加密方式，之后的**建立通信交换报文**阶段则使用共享秘钥加密方式
 - 可信赖的第三方数字证书认证机构的业务流程：
