@@ -1,9 +1,3 @@
-@[TOC](文章目录)
-
-
-<hr style=" border:solid; width:100px; height:1px;" color=#000000 size=1">
-
-
 
 # 1. 类加载器子系统的作用
 
@@ -153,6 +147,21 @@ public class String {
    public static void main(String[] args)
 否则 JavaFX 应用程序类必须扩展javafx.application.Application
 ```
+
+## 4.5 如何打破双亲委派机制
+
+- 自定义类加载器，重写`java.lang.ClassLoader`类中的`loadClass()`方法，自定义加载委派机制
+
+`java.lang.ClassLoader`类：
+
+| 方法                                                 | 说明                                                         |
+| :--------------------------------------------------- | :----------------------------------------------------------- |
+| getParent()                                          | 返回该类加载器的父类加载器                                   |
+| loadClass(String name)                               | 加载名称为name的类，返回的结果是java.lang.Class类的实例      |
+| findClass(String name)                               | 查找名称为name的类，返回的结果是java.lang.Class类的实例      |
+| findLoadedClass(String name)                         | 查找名称为name的已经被加载过的类，返回的结果是java.lang.Class类的实例 |
+| defineClass(String name, byte[] b, int off, int len) | 把字节数组 b中的内容转换成 Java 类，返回的结果是 java.lang.Class类的实例。这个方法被声明为final的 |
+| resolveClass(Class c)                                | 链接指定的 Java 类                                           |
 
 # 5. HotSpot VM整体结构
 
