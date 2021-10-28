@@ -170,6 +170,56 @@ TIME-WAIT通常**是 2 个 `MSL`(`Maximum Segment Lifetime，报文最大生存�
 
 接收到对方的`ACK`报文后，进入`TIME-WAIT`状态，等待2MSL后，关闭连接
 
+## 2.5 如何解决TIME_WAIT过多
+
+### 2.5.1 大量TIME_WAIT造成的影响
+
+在**高并发短连接**的TCP服务器上，当服务器处理完请求后立刻主动正常关闭连接。这个场景下会出现大量socket处于TIME_WAIT状态。如果客户端的并发量持续很高，此时部分客户端就会显示连接不上。
+
+为什么我们要关注这个高并发短连接呢？有两个方面需要注意：
+
+1. **高并发可以让服务器在短时间范围内同时占用大量端口**，而端口有个0~65535的范围，并不是很多，刨除系统和其他服务要用的，剩下的就更少了。
+
+2. 在这个场景中，**短连接表示“业务处理+传输数据的时间 远远小于 TIMEWAIT超时的时间”的连接**。
+
+- 这里有个相对长短的概念，比如取一个web页面，1秒钟的http短连接处理完业务，在关闭连接之后，这个业务用过的端口会停留在TIMEWAIT状态几分钟，**而这几分钟，其他HTTP请求来临的时候是无法占用此端口的**
+
+- 单用这个业务计算服务器的利用率会发现，服务器干正经事的时间和端口（资源）被挂着无法被使用的时间的比例是 1：几百，服务器资源严重浪费。（从这个意义出发来考虑服务器性能调优的话，长连接业务的服务就不需要考虑TIME_WAIT状态。同时，在实际业务场景中，一般**长连接对应的业务的并发量并不会很高**。)
+
+这两个方面，持续的到达一定量的高并发短连接，**会使服务器因端口资源不足而拒绝为一部分客户服务**。同时，这些端口都是服务器临时分配，无法用SO_REUSEADDR选项解决这个问题。
+
+### 2.5.2 如何解决TIME_WAIT过多
+
+修改内核参数：降低MSL周期，也就是tcp_fin_timeout值，同时增加time_wait的队列（tcp_max_tw_buckets），打开系统的TIMEWAIT重用和快速回收。
+
+```shell
+net.ipv4.tcp_syncookies = 1 #表示开启SYN Cookies。当出现SYN等待队列溢出时，启用cookies来处理，可防范少量SYN攻击，默认为0，表示关闭；
+net.ipv4.tcp_tw_reuse = 1 #表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭；
+net.ipv4.tcp_tw_recycle = 1 #表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。
+net.ipv4.tcp_fin_timeout #修改系默认的 TIMEOUT 时间
+```
+
+然后执行 /sbin/sysctl -p 让参数生效.
+
+```shell
+/etc/sysctl.conf # 是一个允许改变正在运行中的Linux系统的接口，它包含一些TCP/IP堆栈和虚拟内存系统的高级选项，修改内核参数永久生效。
+```
+
+如果以上配置调优后性能还不理想，可继续修改一下配置：
+
+```shell
+vi /etc/sysctl.conf
+net.ipv4.tcp_keepalive_time = 1200 
+#表示当keepalive起用的时候，TCP发送keepalive消息的频度。缺省是2小时，改为20分钟。
+net.ipv4.ip_local_port_range = 1024 65000 
+#表示用于向外连接的端口范围。缺省情况下很小：32768到61000，改为1024到65000。
+net.ipv4.tcp_max_syn_backlog = 8192 
+#表示SYN队列的长度，默认为1024，加大队列长度为8192，可以容纳更多等待连接的网络连接数。
+net.ipv4.tcp_max_tw_buckets = 5000 
+#表示系统同时保持TIME_WAIT套接字的最大数量，如果超过这个数字，TIME_WAIT套接字将立刻被清除并打印警告信息。
+#默认为180000，改为5000。对于Apache、Nginx等服务器，上几行的参数可以很好地减少TIME_WAIT套接字数量，但是对于 Squid，效果却不大。此项参数可以控制TIME_WAIT套接字的最大数量，避免Squid服务器被大量的TIME_WAIT套接字拖死。
+```
+
 
 
 # 3. TCP状态转换图
@@ -180,7 +230,7 @@ TIME-WAIT通常**是 2 个 `MSL`(`Maximum Segment Lifetime，报文最大生存�
 
 **当然是TCP发送的每一个消息，都会带着IP层和MAC层了**。因为，TCP每发送一个消息，IP层和MAC层的所有机制都要运行一遍。你只看到TCP三次握手了，其实，IP层和MAC层为此也忙活好久了。
 
-> <span style="color:red">只要是在网络上跑的包，都是完整的，可以由下层没上层，绝对不可能有上层没下层</span>
+> <span style="color:red">只要是在网络上跑的包，都是完整的，可以有下层没上层，绝对不可能有上层没下层</span>
 
 所以，对TCP协议来说，三次握手也好，重试也好，只要想发出去包，就要有IP层和MAC层，不然是发不出去的。
 
@@ -190,6 +240,24 @@ TIME-WAIT通常**是 2 个 `MSL`(`Maximum Segment Lifetime，报文最大生存�
 
 **所谓的二层设备、三层设备，都是这些设备上跑的程序不同而已**。一个HTTP协议的包经过一个二层设备，二层设备收进去的是整个网络包。这里面HTTP、TCP、IP、MAC都有。什么叫二层设备呀，就是只把 MAC头摘下来，看看到底是丢弃、转发，还是自己留着。那什么叫三层设备呢?就是把 MAC头摘下来之后，再把IP头摘下来，看看到底是丢弃、转发，还是自己留着。
 
+# 5. 异常处理
+
+> 总的原则：ACK不会重传，SYN和FIN报文段有最大重传次数。无论是SYN还是FIN，达到最大重传次数后对端若仍无响应则直接进入CLOSED状态
+
+## 5.1 尝试连接IP不存在或端口存在的目的主机
+
+## 5.1.1 当试图连接一个IP不存在的主机时
+
+- 如果尝试连接的IP在局域网内，则会发送N次ARP请求，向局域网内请求获取目的主机的MAC地址，且本地主机不能发出TCP握手消息
+
+- 如果尝试连接的IP在局域网外，则会将TCP握手消息通过网关路由发出到局域网外，但因为最终找不到目的地，会触发TCP的超时重传，直至达到最大重传次数后关闭TCP连接
+
+## 5.1.2 当试图连接一个IP存在但端口不存在的主机时
+
+- 不论尝试连接的主机是在局域网内还是局域网外，当目的主机收到源主机的TCP握手消息后，判断这个端口上并没有应用进程，内核协议栈会立即回复RST复位报文段，发送端在收到RST后关闭TCP连接
+
+- 如果目的主机设置了防火墙策略，限制他人将消息发送到不对外暴露的端口，那么这种情况目的主机会将收到的TCP握手消息直接丢弃，源主机在超时后进行重传，直至达到最大重传次数后关闭TCP连接
+
 # Reference
 
 - [TCP协议面试10连问](https://mp.weixin.qq.com/s/_NDcAZLCL0vvjzu4Sv41Hg)
@@ -197,3 +265,6 @@ TIME-WAIT通常**是 2 个 `MSL`(`Maximum Segment Lifetime，报文最大生存�
 - [TCP三次握手详解](https://blog.csdn.net/jun2016425/article/details/81506353)
 - [TCP同时断开](http://www.tcpipguide.com/free/t_TCPConnectionTermination-4.htm)
 - [趣谈网络协议](https://time.geekbang.org/column/intro/85)
+- [TCP三次握手及四次挥手过程中的异常处理](https://blog.csdn.net/ArtAndLife/article/details/120004631)
+- [解决TIME_WAIT过多造成的问题](https://www.cnblogs.com/dadonggg/p/8778318.html)
+- [解决CLOSE_WAIT、TIME_WAIT等连接状态过多的问题](https://blog.csdn.net/a13568hki/article/details/103858890/)

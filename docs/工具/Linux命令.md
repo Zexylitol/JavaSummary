@@ -94,6 +94,22 @@ netstat [-acCeFghilMnNoprstuvVwx][-A<网络类型>][--ip]
    netstat -anp | more
    ```
 
+4. 查看机器上各种TCP状态的连接数
+
+   ```shell
+   netstat -n| awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
+   LAST_ACK 6
+   SYN_RECV 77
+   CLOSE_WAIT 5793
+   ESTABLISHED 8540
+   FIN_WAIT1 143
+   FIN_WAIT2 378
+   CLOSING 29
+   TIME_WAIT 22960
+   ```
+
+   
+
 ## top
 
 Linux top命令用于实时显示 process 的动态
