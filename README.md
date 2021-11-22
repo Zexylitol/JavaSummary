@@ -217,7 +217,7 @@
   - [Mybatis之ResultMap](docs/框架/Mybatis/Mybatis之ResultMap.md)
   - [Mybatis之动态SQL](docs/框架/Mybatis/Mybatis之动态SQL.md)
 - Spring
-  - [Spring Bean的生命周期](docs/框架/Spring/Spring Bean的生命周期.md)
+  - [Spring Bean的生命周期](docs/框架/Spring/SpringBean的生命周期.md)
   - [Spring中的Bean是线程安全的吗？](docs/框架/Spring/Spring中的Bean是线程安全的吗？.md)
   - AOP
     - [Spring的AOP简介](docs/框架/Spring/AOP/Spring的AOP简介.md)
